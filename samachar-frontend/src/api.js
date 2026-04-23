@@ -2,7 +2,9 @@
 import axios from 'axios';
 
 const BASE = 'https://samachar-api.onrender.com';  // your Render URL
-
+export const getRecent = () => {
+  return axios.get(`${BASE}/api/news/today`);
+};
 export const getToday     = ()   => axios.get(`${BASE}/api/news/today`);
 export const getCategory  = (c)  => axios.get(`${BASE}/api/news/category/${c}`);
 export const getArticle   = (id) => axios.get(`${BASE}/api/news/${id}`);
