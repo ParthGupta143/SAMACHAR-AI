@@ -2,7 +2,7 @@ from groq import Groq
 import json
 import os
 from dotenv import load_dotenv
-
+import time
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -86,6 +86,9 @@ def process_all(articles):
     Skips irrelevant ones after processing.
     """
     print(f"Testing Groq connection...")
+    # Limit to 40 per run to stay within Groq free tier
+    articles = articles[:20]
+    print(f"\n🤖 Processing {len(articles)} articles (capped at 20)...\n")
     try:
         test = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
@@ -105,7 +108,7 @@ def process_all(articles):
         print(f"[{i+1}/{len(articles)}] Processing: {article['title'][:60]}...")
 
         result = process_article(article)   #process each result
-
+        time.sleep(1)
         if result is None:   #if fail
             skipped += 1
             continue
