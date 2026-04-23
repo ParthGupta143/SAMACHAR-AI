@@ -185,4 +185,25 @@ def get_recent(limit: int = 50):
         "articles": [article_to_dict(a) for a in articles]
     }
 
+@app.post("/api/admin/run-pipeline")
+def run_pipeline_once():
+    """One-time endpoint to seed the database."""
+    from pipeline.fetcher import fetch_headlines, save_raw_articles
+    from pipeline.processor import process_all
+    from pipeline.database import save_articles
+
+    articles = fetch_headlines()
+    if not articles:
+        return {"status": "error", "message": "No articles fetched"}
+    
+    save_raw_articles(articles)
+    processed = process_all(articles)
+    saved = save_articles(processed) if processed else 0
+    
+    return {
+        "status": "success",
+        "fetched": len(articles),
+        "processed": len(processed),
+        "saved": saved
+    }
 #SYSTEM FLOW: RSS → AI → DB → FastAPI → Frontend
