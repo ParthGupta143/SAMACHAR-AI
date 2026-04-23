@@ -75,8 +75,8 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
     except json.JSONDecodeError:  #if AI give bad json -> skip
         print(f"  ⚠️ JSON parse failed for: {article['title'][:50]}")
         return None
-    except Exception as e:  #if AI give api error -> skip
-        print(f"  ❌ API error: {e}")
+    except Exception as e:
+        print(f"  ❌ API error FULL: {repr(e)}")
         return None
 
 #👉 Takes list of articles → processes ALL
@@ -85,6 +85,17 @@ def process_all(articles):
     Processes a list of raw articles through GROQ.
     Skips irrelevant ones after processing.
     """
+    print(f"Testing Groq connection...")
+    try:
+        test = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": "say ok"}],
+            max_tokens=10
+        )
+        print(f"Groq test: {test.choices[0].message.content}")
+    except Exception as e:
+        print(f"Groq connection FAILED: {repr(e)}")
+        return []
     processed = []
     skipped = 0     #initial setup
 
