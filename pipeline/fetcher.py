@@ -57,13 +57,30 @@
 
 import feedparser
 import json
+import hashlib
 from datetime import datetime
 
 # These are your news sources - we'll add more later
 RSS_FEEDS = {
-    "NDTV India": "https://feeds.feedburner.com/ndtvnews-india-news",
-    "The Hindu": "https://www.thehindu.com/news/national/feeder/default.rss",
-    "PIB": "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3",
+    # Government - highest value for exams
+    "PIB":          "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1",
+    "PIB Science":  "https://pib.gov.in/RssMain.aspx?ModId=7&Lang=1",
+
+    # National news
+    "The Hindu":    "https://www.thehindu.com/news/national/feeder/default.rss",
+    "Hindu Business": "https://www.thehindu.com/business/feeder/default.rss",
+    "Indian Express": "https://indianexpress.com/section/india/feed/",
+
+    # Economy & Finance
+    "LiveMint":     "https://www.livemint.com/rss/news",
+    "Economic Times": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
+
+    # International
+    "Hindu World":  "https://www.thehindu.com/news/international/feeder/default.rss",
+
+    # Science & Environment
+    "Hindu Science": "https://www.thehindu.com/sci-tech/feeder/default.rss",
+    "Down To Earth": "https://www.downtoearth.org.in/rss/all",
 }
 
 def fetch_headlines():
@@ -94,8 +111,33 @@ def fetch_headlines():
             print(f"  ❌ Failed to fetch {source_name}: {e}")
 
     print(f"\n📦 Total articles fetched: {len(all_articles)}")
+    
+    # NEW LINE:
+    all_articles = deduplicate(all_articles)
+    
+    print(f"📦 After dedup: {len(all_articles)}")
     return all_articles
 
+def deduplicate(articles):
+    """Remove duplicate articles based on title similarity"""
+    seen = set() #seen: stores hashes you`ve already encountered`
+    unique = []  #store final clean articles
+
+    for article in articles:
+          # Create a simple hash from first 60 chars of title
+        title_key= article['title'][:60].lower().strip()  #[:60] = print only first 60 chars, .strip() = no extra spaces
+        #📌 Goal: normalize titles for comparison
+        title_hash = hashlib.md5(title_key.encode()).hexdigest()
+
+        if title_hash not in seen:
+            seen.add(title_hash)
+            unique.append(article)
+
+    duplicates_removed = len(articles) - len(unique)
+    if duplicates_removed > 0:
+        print(f"🔁 Removed {duplicates_removed} duplicate articles")
+
+    return unique
 
 def save_raw_articles(articles):
     """
@@ -109,5 +151,6 @@ def save_raw_articles(articles):
 
     print(f"\n💾 Saved {len(articles)} articles to {filepath}")
     return filepath
+
 
 
