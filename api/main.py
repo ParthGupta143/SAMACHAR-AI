@@ -11,7 +11,8 @@ app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http:/
     description="AI-powered current affairs for exam aspirants",
     version="1.0.0"
 )
-
+from pipeline.database import init_db
+init_db()
 # This allows your React frontend to talk to this API
 app.add_middleware(   #👉 Allows frontend (React) to call your API, Without this → browser blocks requests ❌
     CORSMiddleware,
