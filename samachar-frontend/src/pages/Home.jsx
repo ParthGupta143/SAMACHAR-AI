@@ -1,3 +1,5 @@
+// JSX stands for JavaScript XML, a syntax extension for JavaScript primarily used with React to describe what the user interface should look lik
+
 import { useState, useEffect } from 'react';
 import { getCategory, getCategories, getStats, searchNews, getRecent } from '../api';
 import NewsCard from '../components/NewsCard';
