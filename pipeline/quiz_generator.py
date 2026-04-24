@@ -1,3 +1,4 @@
+
 from groq import Groq
 import json
 import os
@@ -64,15 +65,22 @@ def generate_quiz_for_article(article):
 def generate_daily_quiz():
     """Generate quizzes for today's top articles."""
     session = SessionLocal()
+    print("DEBUG START")
+
+    total = session.query(Article).count()
+    print(f"Total articles in DB: {total}")
     from datetime import datetime
 
     today = datetime.now().date()
 
     # Get today's top 10 articles (score 7+)
+    # articles = session.query(Article).filter(
+    #     Article.created_at >= today,
+    #     Article.exam_relevance_score >= 7
+    # ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
     articles = session.query(Article).filter(
-        Article.created_at >= today,
-        Article.exam_relevance_score >= 7
-    ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
+    Article.exam_relevance_score >= 7
+).order_by(Article.exam_relevance_score.desc()).limit(10).all()
 
     print(f"\n🧠 Generating quizzes for {len(articles)} articles...")
 
