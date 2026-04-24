@@ -32,6 +32,20 @@ class Article(Base):
     published_at        = Column(String(100))#metadata--->
     created_at          = Column(DateTime, default=datetime.now) #👉 Auto-adds time when row is inserted(Timestamp)
 
+class Quiz(Base):
+    __tablename__ = "quizzes"
+
+    id          = Column(Integer, primary_key=True, index=True)
+    article_id  = Column(Integer, index=True)
+    question    = Column(Text)
+    option_a    = Column(Text)
+    option_b    = Column(Text)
+    option_c    = Column(Text)
+    option_d    = Column(Text)
+    correct     = Column(String(1))  # "A", "B", "C", or "D"
+    explanation = Column(Text)
+    category    = Column(String(100))
+    created_at  = Column(DateTime, default=datetime.now)
 
 def init_db():
     """Creates all tables if they don't exist."""

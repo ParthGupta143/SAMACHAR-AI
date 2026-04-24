@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pipeline.database import SessionLocal, Article
 from datetime import datetime, date
 from typing import Optional
-
+from pipeline.database import Quiz
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
     title="SAMACHAR.AI API",
     description="AI-powered current affairs for exam aspirants",
@@ -94,7 +94,19 @@ def get_by_category(category_name: str, limit: int = 20):
         "articles": [article_to_dict(a) for a in articles]
     }
 
-
+@app.get("/api/news/recent")
+def get_recent(limit: int = 50):
+    """Get most recent articles regardless of date."""
+    session = SessionLocal()
+    articles = session.query(Article)\
+        .order_by(Article.created_at.desc())\
+        .limit(limit)\
+        .all()
+    session.close()
+    return {
+        "count": len(articles),
+        "articles": [article_to_dict(a) for a in articles]
+    }
 @app.get("/api/news/{article_id}") #single article fetch by id
 def get_article(article_id: int):
     """Get a single article by ID."""
@@ -172,19 +184,7 @@ def get_stats():
         "top_article_today": top_score.title if top_score else None
     }
 
-@app.get("/api/news/recent")
-def get_recent(limit: int = 50):
-    """Get most recent articles regardless of date."""
-    session = SessionLocal()
-    articles = session.query(Article)\
-        .order_by(Article.created_at.desc())\
-        .limit(limit)\
-        .all()
-    session.close()
-    return {
-        "count": len(articles),
-        "articles": [article_to_dict(a) for a in articles]
-    }
+
 
 @app.post("/api/admin/run-pipeline")
 def run_pipeline_once():
@@ -208,3 +208,44 @@ def run_pipeline_once():
         "saved": saved
     }
 #SYSTEM FLOW: RSS → AI → DB → FastAPI → Frontend
+
+@app.get("/api/quiz/today")
+def get_today_quiz():
+    """Get today's quiz questions."""
+    session = SessionLocal()
+    today = datetime.now().date()
+
+    quizzes = session.query(Quiz).filter(
+        Quiz.created_at >= today
+    ).order_by(Quiz.category).all()
+
+    session.close()
+
+    return {
+        "count": len(quizzes),
+        "questions": [
+            {
+                "id":          q.id,
+                "question":    q.question,
+                "options": {
+                    "A": q.option_a,
+                    "B": q.option_b,
+                    "C": q.option_c,
+                    "D": q.option_d
+                },
+                "correct":     q.correct,
+                "explanation": q.explanation,
+                "category":    q.category
+            }
+            for q in quizzes
+        ]
+    }
+
+@app.post("/api/admin/generate-quiz")
+def trigger_quiz_generation():
+    """Trigger quiz generation for today's articles."""
+    from pipeline.quiz_generator import generate_daily_quiz
+    from pipeline.database import init_db
+    init_db()
+    saved = generate_daily_quiz()
+    return {"status": "success", "questions_generated": saved}
