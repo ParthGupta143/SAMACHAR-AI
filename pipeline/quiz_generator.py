@@ -79,7 +79,7 @@ def generate_daily_quiz():
     #     Article.exam_relevance_score >= 7
     # ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
     articles = session.query(Article).filter(
-    Article.exam_relevance_score >= 7
+    Article.exam_relevance_score >= 5
 ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
 
     print(f"\n🧠 Generating quizzes for {len(articles)} articles...")

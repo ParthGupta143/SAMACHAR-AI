@@ -2,10 +2,11 @@
 
 from fastapi import FastAPI, HTTPException, Query #👉 FastAPI: Used to create APIs easily
 from fastapi.middleware.cors import CORSMiddleware
-from pipeline.database import SessionLocal, Article
+# from pipeline.database import SessionLocal, Article
+from pipeline.database import SessionLocal, Article, Quiz
 from datetime import datetime, date
 from typing import Optional
-from pipeline.database import Quiz
+
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
     title="SAMACHAR.AI API",
     description="AI-powered current affairs for exam aspirants",
@@ -211,13 +212,11 @@ def run_pipeline_once():
 
 @app.get("/api/quiz/today")
 def get_today_quiz():
-    """Get today's quiz questions."""
     session = SessionLocal()
-    today = datetime.now().date()
 
-    quizzes = session.query(Quiz).filter(
-        Quiz.created_at >= today
-    ).order_by(Quiz.category).all()
+    quizzes = session.query(Quiz)\
+        .order_by(Quiz.id)\
+        .all()
 
     session.close()
 
