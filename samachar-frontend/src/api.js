@@ -1,8 +1,8 @@
 //Single place for all API calls
 import axios from 'axios';
 
-// const BASE = 'https://samachar-api.onrender.com';  // your Render URL
-const BASE = 'http://localhost:8000';
+const BASE = 'https://samachar-api.onrender.com';  // your Render URL
+// const BASE = 'http://localhost:8000';
 export const getRecent = () => {
   return axios.get(`${BASE}/api/news/today`);
 };
