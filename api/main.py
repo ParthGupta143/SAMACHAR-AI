@@ -248,3 +248,26 @@ def trigger_quiz_generation():
     init_db()
     saved = generate_daily_quiz()
     return {"status": "success", "questions_generated": saved}
+
+@app.get("/api/news/weekly-digest")
+def get_weekly_digest():
+    """Top 20 exam-relevant articles from the past 7 days."""
+    session = SessionLocal()
+    from datetime import timedelta
+
+    week_ago = datetime.now() - timedelta(days=7)
+
+    articles = session.query(Article).filter(
+        Article.created_at >= week_ago
+    ).order_by(
+        Article.exam_relevance_score.desc()
+    ).limit(20).all()
+
+    session.close()
+
+    return {
+        "week_start": str(week_ago.date()),
+        "week_end":   str(datetime.now().date()),
+        "count":      len(articles),
+        "articles":   [article_to_dict(a) for a in articles]
+    }
