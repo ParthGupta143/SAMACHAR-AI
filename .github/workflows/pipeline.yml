@@ -1,0 +1,23 @@
+name: SAMACHAR.AI Auto Pipeline
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Runs every 6 hours
+  workflow_dispatch:         # Also allows manual trigger from GitHub UI
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger SAMACHAR Pipeline
+        run: |
+          curl -X POST https://samachar-api.onrender.com/api/admin/run-pipeline \
+            -H "Content-Type: application/json" \
+            --max-time 300
+
+      - name: Trigger Quiz Generation
+        run: |
+          curl -X POST https://samachar-api.onrender.com/api/admin/generate-quiz \
+            -H "Content-Type: application/json" \
+            --max-time 300
