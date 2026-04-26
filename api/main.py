@@ -195,7 +195,7 @@ def get_stats():
     # today = datetime.now().date()
     today = datetime.now()
     # start = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    start = datetime.now() - timedelta(days=1)
+    start = datetime.now() - timedelta(days=2)
 
     total     = session.query(Article).count()
     today_count = session.query(Article)\
