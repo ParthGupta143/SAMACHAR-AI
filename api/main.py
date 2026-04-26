@@ -52,11 +52,13 @@ def root():
 def get_today(limit: int = 50):
     """Get all of today's processed articles, highest score first."""
     session = SessionLocal()
-    today = datetime.now().date()
+    # today = datetime.now().date()
+    start = datetime.utcnow() - timedelta(days=1)
+    today = datetime.utcnow().date()
 
 
     articles = session.query(Article)\
-        .filter(Article.created_at >= today)\
+        .filter(Article.created_at >= start)\
         .order_by(Article.exam_relevance_score.desc())\
         .limit(limit)\
         .all()
@@ -195,7 +197,8 @@ def get_stats():
     # today = datetime.now().date()
     today = datetime.now()
     # start = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    start = datetime.now() - timedelta(days=2)
+    # start = datetime.now() - timedelta(days=2)
+    start = datetime.utcnow() - timedelta(days=1)
 
     total     = session.query(Article).count()
     today_count = session.query(Article)\
