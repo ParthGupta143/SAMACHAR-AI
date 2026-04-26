@@ -102,6 +102,7 @@ export default function App() {
 
   return (
     <div className="font-sans">
+      <div onClick={goHome} className="cursor-pointer"></div>
       <Navbar
         onSearch={setSearchQuery}
         onQuiz={() => { setShowQuiz(true); setShowDigest(false); }}

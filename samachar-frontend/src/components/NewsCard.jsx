@@ -16,9 +16,15 @@ export default function NewsCard({ article, onClick }) {
         <span className={`text-xs font-medium px-2 py-1 rounded-full ${colorClass}`}>
           {article.category}
         </span>
-        <span className={`text-xs font-bold ${scoreColor}`}>
+        {/* <span className={`text-xs font-bold ${scoreColor}`}>
           ★ {score}/10
-        </span>
+        </span> */}
+        <span className={`text-xs font-bold px-2 py-0.5 rounded-full
+  ${score >= 8 ? 'bg-red-100 text-red-600' : 
+    score >= 6 ? 'bg-orange-100 text-orange-600' : 
+    'bg-gray-100 text-gray-500'}`}>
+  ★ {score}
+</span>
       </div>
 
       {/* Title */}

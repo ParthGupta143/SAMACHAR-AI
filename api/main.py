@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException, Query #👉 FastAPI: Used to create 
 from fastapi.middleware.cors import CORSMiddleware
 # from pipeline.database import SessionLocal, Article
 from pipeline.database import SessionLocal, Article, Quiz
-from datetime import datetime, date
+from datetime import datetime, timedelta
 from typing import Optional
 
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
@@ -192,11 +192,15 @@ def search(q: str = Query(..., min_length=2), limit: int = 20):
 def get_stats():
     """Dashboard stats — total articles, categories covered, today's count."""
     session = SessionLocal()
-    today = datetime.now().date()
+    # today = datetime.now().date()
+    today = datetime.now()
+    # start = today.replace(hour=0, minute=0, second=0, microsecond=0)
+    start = datetime.now() - timedelta(days=1)
 
     total     = session.query(Article).count()
     today_count = session.query(Article)\
-        .filter(Article.created_at >= today).count()
+        .filter(Article.created_at >= start).count()
+    # .filter(Article.created_at >= start).count()
     top_score = session.query(Article)\
         .order_by(Article.exam_relevance_score.desc()).first()
 

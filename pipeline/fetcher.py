@@ -61,77 +61,77 @@ import hashlib
 from datetime import datetime
 
 # These are your news sources - we'll add more later
-# RSS_FEEDS = {
-#     # Government - highest value for exams
-#     "PIB":          "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1",
-#     "PIB Science":  "https://pib.gov.in/RssMain.aspx?ModId=7&Lang=1",
-
-#     # National news
-#     "The Hindu":    "https://www.thehindu.com/news/national/feeder/default.rss",
-#     "Hindu Business": "https://www.thehindu.com/business/feeder/default.rss",
-#     "Indian Express": "https://indianexpress.com/section/india/feed/",
-
-#     # Economy & Finance
-#     "LiveMint":     "https://www.livemint.com/rss/news",
-#     "Economic Times": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
-
-#     # International
-#     "Hindu World":  "https://www.thehindu.com/news/international/feeder/default.rss",
-
-#     # Science & Environment
-#     "Hindu Science": "https://www.thehindu.com/sci-tech/feeder/default.rss",
-#     "Down To Earth": "https://www.downtoearth.org.in/rss/all",
-# }
 RSS_FEEDS = {
-    # 🟢 Government (high priority)
-    "PIB": [
-        "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1",
-        "https://pib.gov.in/RssMain.aspx?ModId=7&Lang=1",
-        "https://pib.gov.in/rss.aspx"
-    ],
+    # Government - highest value for exams
+    "PIB":          "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1",
+    "PIB Science":  "https://pib.gov.in/RssMain.aspx?ModId=7&Lang=1",
 
-    # 🟢 National
-    "The Hindu": [
-        "https://www.thehindu.com/news/national/feeder/default.rss",
-        "https://www.thehindu.com/business/feeder/default.rss",
-        "https://www.thehindu.com/sci-tech/feeder/default.rss",
-        "https://www.thehindu.com/news/international/feeder/default.rss"
-    ],
-    "Indian Express": [
-        "https://indianexpress.com/section/india/feed/",
-        "https://indianexpress.com/section/explained/feed/"
-    ],
+    # National news
+    "The Hindu":    "https://www.thehindu.com/news/national/feeder/default.rss",
+    "Hindu Business": "https://www.thehindu.com/business/feeder/default.rss",
+    "Indian Express": "https://indianexpress.com/section/india/feed/",
 
-    # 🟢 Economy
-    "LiveMint": [
-        "https://www.livemint.com/rss/news"
-    ],
-    "Economic Times": [
-        "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
-        "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
-    ],
-    "Business Standard": [
-        "https://www.business-standard.com/rss/home_page_top_stories.rss"
-    ],
+    # Economy & Finance
+    "LiveMint":     "https://www.livemint.com/rss/news",
+    "Economic Times": "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
 
-    # 🟢 Policy / Analysis (VERY IMPORTANT for exams)
-    "PRS": [
-        "https://prsindia.org/feed"
-    ],
+    # International
+    "Hindu World":  "https://www.thehindu.com/news/international/feeder/default.rss",
 
-    # 🟢 Science / Environment
-    "Down To Earth": [
-        "https://www.downtoearth.org.in/rss/all"
-    ],
-
-    # 🟢 International
-    "BBC": [
-        "http://feeds.bbci.co.uk/news/world/rss.xml"
-    ],
-    "Al Jazeera": [
-        "https://www.aljazeera.com/xml/rss/all.xml"
-    ]
+    # Science & Environment
+    "Hindu Science": "https://www.thehindu.com/sci-tech/feeder/default.rss",
+    # "Down To Earth": "https://www.downtoearth.org.in/rss/all",
 }
+# RSS_FEEDS = {
+#     # 🟢 Government (high priority)
+#     "PIB": [
+#         "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1",
+#         "https://pib.gov.in/RssMain.aspx?ModId=7&Lang=1",
+#         "https://pib.gov.in/rss.aspx"
+#     ],
+
+#     # 🟢 National
+#     "The Hindu": [
+#         "https://www.thehindu.com/news/national/feeder/default.rss",
+#         "https://www.thehindu.com/business/feeder/default.rss",
+#         "https://www.thehindu.com/sci-tech/feeder/default.rss",
+#         "https://www.thehindu.com/news/international/feeder/default.rss"
+#     ],
+#     "Indian Express": [
+#         "https://indianexpress.com/section/india/feed/",
+#         "https://indianexpress.com/section/explained/feed/"
+#     ],
+
+#     # 🟢 Economy
+#     "LiveMint": [
+#         "https://www.livemint.com/rss/news"
+#     ],
+#     "Economic Times": [
+#         "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+#         "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
+#     ],
+#     "Business Standard": [
+#         "https://www.business-standard.com/rss/home_page_top_stories.rss"
+#     ],
+
+#     # 🟢 Policy / Analysis (VERY IMPORTANT for exams)
+#     "PRS": [
+#         "https://prsindia.org/feed"
+#     ],
+
+#     # 🟢 Science / Environment
+#     "Down To Earth": [
+#         "https://www.downtoearth.org.in/rss/all"
+#     ],
+
+#     # 🟢 International
+#     "BBC": [
+#         "http://feeds.bbci.co.uk/news/world/rss.xml"
+#     ],
+#     "Al Jazeera": [
+#         "https://www.aljazeera.com/xml/rss/all.xml"
+#     ]
+# }
 
 def fetch_headlines():
     """
