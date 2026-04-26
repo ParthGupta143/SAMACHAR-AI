@@ -3,7 +3,7 @@ import { CATEGORY_COLORS } from './CategorySidebar';
 export default function NewsCard({ article, onClick }) {
   const colorClass = CATEGORY_COLORS[article.category] || "bg-gray-100 text-gray-700";
   const score = article.exam_relevance_score;
-  const scoreColor = score >= 8 ? 'text-red-500' : score >= 6 ? 'text-orange-400' : 'text-gray-400';
+  // const scoreColor = score >= 8 ? 'text-red-500' : score >= 6 ? 'text-orange-400' : 'text-gray-400';
 
   return (
     <div
