@@ -87,8 +87,8 @@ def process_all(articles):
     """
     print(f"Testing Groq connection...")
     # Limit to 40 per run to stay within Groq free tier
-    articles = articles[:20]
-    print(f"\n🤖 Processing {len(articles)} articles (capped at 20)...\n")
+    articles = articles[:50]
+    print(f"\n🤖 Processing {len(articles)} articles (capped at 50)...\n")
     try:
         test = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
