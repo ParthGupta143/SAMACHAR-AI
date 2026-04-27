@@ -87,7 +87,7 @@ RSS_FEEDS = {
     "PIB":                  "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1",
     "PIB Science":          "https://pib.gov.in/RssMain.aspx?ModId=7&Lang=1",
     "PIB Economy":          "https://pib.gov.in/RssMain.aspx?ModId=3&Lang=1",
-    "RBI":                  "https://www.rbi.org.in/Scripts/rss.aspx",
+    # "RBI":                  "https://www.rbi.org.in/Scripts/rss.aspx",
     "Ministry of Finance":  "https://pib.gov.in/RssMain.aspx?ModId=4&Lang=1",
     "Ministry of Defence":  "https://pib.gov.in/RssMain.aspx?ModId=14&Lang=1",
     "Ministry of External": "https://pib.gov.in/RssMain.aspx?ModId=8&Lang=1",
@@ -117,18 +117,19 @@ RSS_FEEDS = {
     "NDTV World":           "https://feeds.feedburner.com/ndtvnews-world-news",
 
     # ═══ ENVIRONMENT & SCIENCE ═══
-    "Down To Earth":        "https://www.downtoearth.org.in/rss/all",
-    "DTE Climate":          "https://www.downtoearth.org.in/rss/climate-change",
+    "Mint Science":         "https://www.livemint.com/rss/science",
+    # "DTE Climate":          "https://www.downtoearth.org.in/rss/climate-change",
     "DTE Governance":       "https://www.downtoearth.org.in/rss/governance",
     "Hindu Science Tech":   "https://www.thehindu.com/sci-tech/technology/feeder/default.rss",
+    "Hindu Agriculture":    "https://www.thehindu.com/news/national/feeder/default.rss",
 
     # ═══ INTERNATIONAL RELATIONS ═══
     "Hindu World":          "https://www.thehindu.com/news/international/feeder/default.rss",
     "IE World":             "https://indianexpress.com/section/world/feed/",
     "Wire World":           "https://thewire.in/rss/category/world",
-
+    "ET International":     "https://economictimes.indiatimes.com/news/international/world-news/rssfeeds/1441138060.cms",
     # ═══ REPORTS & INDEXES ═══
-    "Wire Economy":         "https://thewire.in/rss/category/economy",
+    "IE Science":           "https://indianexpress.com/section/technology/science/feed/",
     "Wire Government":      "https://thewire.in/rss/category/government",
     "Wire Science":         "https://thewire.in/rss/category/science",
 }
