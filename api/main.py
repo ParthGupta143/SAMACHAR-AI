@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pipeline.database import SessionLocal, Article, Quiz
 from datetime import datetime, timedelta
 from typing import Optional
+from pipeline.database import SessionLocal, Article
 
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
     title="SAMACHAR.AI API",
@@ -223,10 +224,28 @@ def run_pipeline_once():
     from pipeline.fetcher import fetch_headlines, save_raw_articles
     from pipeline.processor import process_all
     from pipeline.database import save_articles
+    from datetime import datetime, timedelta
+    # from pipeline.database import SessionLocal, Article
+    
 
     articles = fetch_headlines()
     if not articles:
         return {"status": "error", "message": "No articles fetched"}
+    
+    # 🧹 DELETE OLD DATA
+    from datetime import datetime
+
+    start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    session = SessionLocal()
+
+    try:
+        session.query(Article).filter(
+            Article.created_at < start
+        ).delete()
+        session.commit()
+    finally:
+        session.close()
     
     save_raw_articles(articles)
     processed = process_all(articles)
