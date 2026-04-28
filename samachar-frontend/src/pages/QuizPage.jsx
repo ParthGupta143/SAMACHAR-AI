@@ -210,7 +210,7 @@ export default function QuizPage({ onBack }) {
       }).then(() => setSubmitted(true))
         .catch(err => console.error("Submit error:", err));
     }
-  }, [finished]);
+  },[finished, isSignedIn, submitted, score, questions.length, user?.id]);
 
   const handleSelect = (option) => {
     if (answered) return;
