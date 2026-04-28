@@ -64,13 +64,18 @@ export default function Home({ onArticleClick, searchQuery }) {
       
 
       <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6">
-        <CategorySidebar
-          categories={categories}
-          selected={selected}
-          onSelect={setSelected}
-        />
 
-        <div className="flex-1">
+  {/* Sidebar */}
+  <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto">
+    <CategorySidebar
+      categories={categories}
+      selected={selected}
+      onSelect={setSelected}
+    />
+  </div>
+
+  {/* Articles */}
+  <div className="flex-1 overflow-y-auto h-[calc(100vh-80px)]">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-lg font-bold text-gray-800">
               {searchQuery
