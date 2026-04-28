@@ -47,6 +47,16 @@ class Quiz(Base):
     category    = Column(String(100))
     created_at  = Column(DateTime, default=datetime.now)
 
+class UserQuizAttempt(Base):
+    __tablename__ = "user_quiz_attempts"
+
+    id           = Column(Integer, primary_key=True, index=True)
+    clerk_user_id = Column(String(200), index=True)  # Clerk se aata hai
+    score        = Column(Integer)   # kitne sahi
+    total        = Column(Integer)   # total questions
+    percentage   = Column(Integer)   # score/total * 100
+    created_at   = Column(DateTime, default=datetime.now)
+
 def init_db():
     """Creates all tables if they don't exist."""
     Base.metadata.create_all(bind=engine) #👉 Creates table automatically in DB

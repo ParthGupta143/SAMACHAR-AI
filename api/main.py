@@ -7,7 +7,8 @@ from pipeline.database import SessionLocal, Article, Quiz
 from datetime import datetime, timedelta
 from typing import Optional
 from pipeline.database import SessionLocal, Article
-
+from pipeline.database import UserQuizAttempt
+from pydantic import BaseModel
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
     title="SAMACHAR.AI API",
     description="AI-powered current affairs for exam aspirants",
@@ -298,3 +299,53 @@ def trigger_quiz_generation():
     saved = generate_daily_quiz()
     return {"status": "success", "questions_generated": saved}
 
+
+
+class QuizSubmit(BaseModel):
+    clerk_user_id: str
+    score: int
+    total: int
+
+@app.post("/api/quiz/submit")
+def submit_quiz(data: QuizSubmit):
+    """Save quiz attempt for a user."""
+    session = SessionLocal()
+    attempt = UserQuizAttempt(
+        clerk_user_id = data.clerk_user_id,
+        score         = data.score,
+        total         = data.total,
+        percentage    = round((data.score / data.total) * 100)
+    )
+    session.add(attempt)
+    session.commit()
+    session.close()
+    return {"status": "saved", "percentage": attempt.percentage}
+
+@app.get("/api/profile/{clerk_user_id}")
+def get_profile(clerk_user_id: str):
+    """Get quiz history + stats for a user."""
+    session = SessionLocal()
+    attempts = session.query(UserQuizAttempt)\
+        .filter(UserQuizAttempt.clerk_user_id == clerk_user_id)\
+        .order_by(UserQuizAttempt.created_at.desc())\
+        .all()
+    session.close()
+
+    if not attempts:
+        return {"total_attempts": 0, "avg_score": 0, "history": []}
+
+    avg = round(sum(a.percentage for a in attempts) / len(attempts))
+
+    return {
+        "total_attempts": len(attempts),
+        "avg_score": avg,
+        "best_score": max(a.percentage for a in attempts),
+        "history": [
+            {
+                "score": a.score,
+                "total": a.total,
+                "percentage": a.percentage,
+                "date": str(a.created_at)
+            } for a in attempts
+        ]
+    }
