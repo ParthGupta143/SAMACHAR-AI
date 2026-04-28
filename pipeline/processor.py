@@ -56,7 +56,8 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
 
     try: #Call AI
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",  # same model you used in Omni.AI
+            # model="llama-3.3-70b-versatile",  # same model you used in Omni.AI
+            model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1024,
             temperature=0.1  # low temp = more consistent JSON output, less randomness
@@ -79,6 +80,8 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
         print(f"  ❌ API error FULL: {repr(e)}")
         return None
 
+
+
 #👉 Takes list of articles → processes ALL
 def process_all(articles):
     """
@@ -87,11 +90,12 @@ def process_all(articles):
     """
     print(f"Testing Groq connection...")
     # Limit to 40 per run to stay within Groq free tier
-    articles = articles[:50]
+    articles = articles[:40]
     print(f"\n🤖 Processing {len(articles)} articles (capped at 50)...\n")
     try:
         test = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            # model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": "say ok"}],
             max_tokens=10
         )
@@ -129,3 +133,6 @@ def process_all(articles):
 
     print(f"\n📊 Results: {len(processed)} kept, {skipped} filtered out")
     return processed
+
+
+
