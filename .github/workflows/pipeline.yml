@@ -65,6 +65,39 @@
 #             -H "Content-Type: application/json" \
 #             --max-time 300 || true
 
+# name: SAMACHAR.AI Auto Pipeline
+
+# on:
+#   schedule:
+#     - cron: '0 */6 * * *'
+#   workflow_dispatch:
+
+# jobs:
+#   run-pipeline:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Wake up server
+#         run: |
+#           echo "Waking Render..."
+#           curl -s https://samachar-api.onrender.com/ --max-time 60 || true
+#           sleep 90
+
+#       - name: Trigger Pipeline (fire and forget)
+#         run: |
+#           curl -X POST https://samachar-api.onrender.com/api/admin/run-pipeline \
+#             -H "Content-Type: application/json" \
+#             --max-time 30
+#           echo "✅ Pipeline triggered"
+
+#       - name: Trigger Quiz (fire and forget)
+#         run: |
+#           sleep 10
+#           curl -X POST https://samachar-api.onrender.com/api/admin/generate-quiz \
+#             -H "Content-Type: application/json" \
+#             --max-time 30 || true
+#           echo "✅ Quiz triggered"
+
 name: SAMACHAR.AI Auto Pipeline
 
 on:
@@ -77,23 +110,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake up server
-        run: |
-          echo "Waking Render..."
-          curl -s https://samachar-api.onrender.com/ --max-time 60 || true
-          sleep 90
-
-      - name: Trigger Pipeline (fire and forget)
+      - name: Trigger Pipeline
         run: |
           curl -X POST https://samachar-api.onrender.com/api/admin/run-pipeline \
             -H "Content-Type: application/json" \
-            --max-time 30
-          echo "✅ Pipeline triggered"
+            --max-time 300
+          echo "✅ Done"
 
-      - name: Trigger Quiz (fire and forget)
+      - name: Trigger Quiz
         run: |
-          sleep 10
+          sleep 15
           curl -X POST https://samachar-api.onrender.com/api/admin/generate-quiz \
             -H "Content-Type: application/json" \
-            --max-time 30 || true
-          echo "✅ Quiz triggered"
+            --max-time 60 || true
