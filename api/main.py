@@ -506,7 +506,27 @@ def search(q: str = Query(..., min_length=2), limit: int = 20):
         "count": len(articles),
         "articles": [article_to_dict(a) for a in articles]
     }
+@app.get("/api/categories")
+def get_categories():
+    session = SessionLocal()
 
+    from sqlalchemy import func
+
+    results = session.query(
+        Article.category,
+        func.count(Article.id).label("count")
+    ).group_by(Article.category)\
+     .order_by(func.count(Article.id).desc())\
+     .all()
+
+    session.close()
+
+    return {
+        "categories": [
+            {"name": r.category, "count": r.count}
+            for r in results
+        ]
+    }
 # ─────────────────────────────────────────────
 # 📊 STATS
 # ─────────────────────────────────────────────
