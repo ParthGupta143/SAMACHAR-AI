@@ -9,6 +9,7 @@ from typing import Optional
 from pipeline.database import SessionLocal, Article
 from pipeline.database import UserQuizAttempt
 from pydantic import BaseModel
+from fastapi import BackgroundTasks
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
     title="SAMACHAR.AI API",
     description="AI-powered current affairs for exam aspirants",
@@ -349,3 +350,30 @@ def get_profile(clerk_user_id: str):
             } for a in attempts
         ]
     }
+
+# from fastapi import BackgroundTasks
+
+def actually_run_pipeline():
+    from pipeline.fetcher import fetch_headlines, save_raw_articles
+    from pipeline.processor import process_all
+    from pipeline.database import save_articles
+    articles = fetch_headlines()
+    if articles:
+        save_raw_articles(articles)
+        processed = process_all(articles)
+        if processed:
+            save_articles(processed)
+
+def actually_run_quiz():
+    from pipeline.quiz_generator import generate_daily_quiz
+    generate_daily_quiz()
+
+@app.post("/api/admin/run-pipeline")
+def run_pipeline_once(background_tasks: BackgroundTasks):
+    background_tasks.add_task(actually_run_pipeline)
+    return {"status": "started - running in background"}
+
+@app.post("/api/admin/generate-quiz")
+def trigger_quiz(background_tasks: BackgroundTasks):
+    background_tasks.add_task(actually_run_quiz)
+    return {"status": "started - running in background"}
