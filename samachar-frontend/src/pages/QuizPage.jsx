@@ -177,7 +177,8 @@ import { useState, useEffect } from 'react';
 // import { getQuiz } from '../api';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
-import { getQuiz, BASE_URL } from '../api';
+// import { getQuiz, BASE_URL } from '../api';
+import { BASE_URL } from '../api';
 // const BASE = 'https://samachar-api.onrender.com';
 export const getProfile = (clerkUserId) =>
   axios.get(`${BASE_URL}/api/profile/${clerkUserId}`);
