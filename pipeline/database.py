@@ -63,34 +63,45 @@ def init_db():
     print("✅ Database tables ready")
 
 
-def save_articles(processed_articles): #This is your main DB write function
-    """
-    Saves a list of processed articles to DB.
-    Skips duplicates automatically (via article_hash).
-    """
+def save_articles(processed_articles):
+    from rapidfuzz import fuzz
     import hashlib
+    
     session = SessionLocal()
     saved = 0
     skipped = 0
 
+    # Fetch existing titles from DB for fuzzy match
+    existing_titles = [a.title for a in session.query(Article.title).all()]
+
     for article in processed_articles:
-        # Create hash from title for dedup
-        hash_input = article.get("title", "")[:60].lower().strip()
+        title = article.get("title", "")
+        
+        # 1. Exact hash dedup
+        hash_input = title[:60].lower().strip()
         article_hash = hashlib.md5(hash_input.encode()).hexdigest()
-
-        # Check if already exists
-        exists = session.query(Article).filter_by(
-            article_hash=article_hash
-        ).first()
-
+        exists = session.query(Article).filter_by(article_hash=article_hash).first()
         if exists:
             skipped += 1
             continue
 
-        # Save new article (Create DB object)
-        db_article = Article(  #Python dict → DB row
+        # 2. Fuzzy dedup — skip if >85% similar to any existing title
+        is_duplicate = False
+        for existing_title in existing_titles:
+            similarity = fuzz.ratio(title.lower(), existing_title.lower())
+            if similarity > 85:
+                is_duplicate = True
+                print(f"🔁 Fuzzy duplicate skipped: {title[:50]} (~{similarity}% match)")
+                break
+        
+        if is_duplicate:
+            skipped += 1
+            continue
+
+        # Save new article
+        db_article = Article(
             article_hash        = article_hash,
-            title               = article.get("title", ""),
+            title               = title,
             category            = article.get("category", ""),
             summary             = article.get("summary", ""),
             key_points          = article.get("key_points", []),
@@ -103,12 +114,12 @@ def save_articles(processed_articles): #This is your main DB write function
             published_at        = article.get("published", "")
         )
         session.add(db_article)
+        existing_titles.append(title)  # add to list so next article also checked against it
         saved += 1
 
-    session.commit()   #👉 Actually writes to DB
+    session.commit()
     session.close()
-
-    print(f"💾 DB: {saved} new articles saved, {skipped} already existed")
+    print(f"💾 DB: {saved} new articles saved, {skipped} duplicates skipped")
     return saved
 
 

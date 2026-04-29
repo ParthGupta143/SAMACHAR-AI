@@ -1,23 +1,66 @@
+# name: SAMACHAR.AI Auto Pipeline
+
+# on:
+#   schedule:
+#     - cron: '0 */6 * * *'  # Runs every 6 hours
+#   workflow_dispatch:         # Also allows manual trigger from GitHub UI
+
+# jobs:
+#   run-pipeline:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Trigger SAMACHAR Pipeline
+#         run: |
+#           curl -X POST https://samachar-api.onrender.com/api/admin/run-pipeline \
+#             -H "Content-Type: application/json" \
+#             --max-time 300
+
+#       - name: Trigger Quiz Generation
+#         run: |
+#           curl -X POST https://samachar-api.onrender.com/api/admin/generate-quiz \
+#             -H "Content-Type: application/json" \
+#             --max-time 300
+
 name: SAMACHAR.AI Auto Pipeline
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Runs every 6 hours
-  workflow_dispatch:         # Also allows manual trigger from GitHub UI
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger SAMACHAR Pipeline
+      - name: Wake up Render server
         run: |
-          curl -X POST https://samachar-api.onrender.com/api/admin/run-pipeline \
-            -H "Content-Type: application/json" \
-            --max-time 300
+          echo "Waking up Render..."
+          curl -s https://samachar-api.onrender.com/ --max-time 60 || true
+          echo "Waiting 60 seconds for full wake up..."
+          sleep 60
+
+      - name: Trigger Pipeline
+        run: |
+          for i in 1 2 3; do
+            echo "Attempt $i..."
+            response=$(curl -s -o /dev/null -w "%{http_code}" \
+              -X POST https://samachar-api.onrender.com/api/admin/run-pipeline \
+              -H "Content-Type: application/json" \
+              --max-time 300)
+            echo "Status: $response"
+            if [ "$response" = "200" ]; then
+              echo "✅ Pipeline succeeded"
+              break
+            fi
+            echo "Retrying in 30s..."
+            sleep 30
+          done
 
       - name: Trigger Quiz Generation
         run: |
+          sleep 10
           curl -X POST https://samachar-api.onrender.com/api/admin/generate-quiz \
             -H "Content-Type: application/json" \
-            --max-time 300
+            --max-time 300 || true
