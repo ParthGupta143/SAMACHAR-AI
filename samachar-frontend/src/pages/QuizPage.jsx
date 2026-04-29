@@ -212,19 +212,26 @@ export default function QuizPage({ onBack }) {
 //   setLoading(false);
 // };
 const fetchQuiz = async () => {
-  setFade(false); // fade out
+  setFade(false);
   setLoading(true);
 
   try {
-    const res = await axios.get(`${BASE_URL}/api/quiz?t=${Date.now()}`);
-    
+    const res = await axios.get(`${BASE_URL}/api/quiz/today?t=${Date.now()}`);
+
+    const allQuestions = res.data?.questions || [];
+
+    // ✅ limit to 20
+    const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+    const limited = shuffled.slice(0, 20);
+
     setTimeout(() => {
-      setQuestions(res.data?.questions || []);
-      setFade(true); // fade in
+      setQuestions(limited);
+      setFade(true);
     }, 200);
 
   } catch (err) {
     console.error("Quiz fetch error:", err);
+    setQuestions([]);
   }
 
   setLoading(false);
@@ -269,11 +276,12 @@ const handleNewQuiz = async () => {
 
   try {
     // backend pe fresh quiz generate
-    await axios.post(`${BASE_URL}/api/admin/generate-quiz`);
+    await axios.get(`${BASE_URL}/trigger-quiz`);
 
-    // new quiz fetch
-    await fetchQuiz();
+// wait for backend generation
+await new Promise(res => setTimeout(res, 3000));
 
+await fetchQuiz();
     // reset state
     setCurrent(0);
     setScore(0);
