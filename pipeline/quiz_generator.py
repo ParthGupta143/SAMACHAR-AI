@@ -63,61 +63,110 @@ def generate_quiz_for_article(article):
         return []
 
 
+# def generate_daily_quiz():
+#     """Generate quizzes for today's top articles."""
+#     session = SessionLocal()
+#     print("DEBUG START")
+
+#     total = session.query(Article).count()
+#     print(f"Total articles in DB: {total}")
+#     from datetime import datetime
+
+#     today = datetime.now().date()
+
+#     # Get today's top 10 articles (score 7+)
+#     # articles = session.query(Article).filter(
+#     #     Article.created_at >= today,
+#     #     Article.exam_relevance_score >= 7
+#     # ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
+#     articles = session.query(Article).filter(
+#     Article.exam_relevance_score >= 5
+# ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
+
+#     print(f"\n🧠 Generating quizzes for {len(articles)} articles...")
+
+#     total_saved = 0
+
+#     for article in articles:
+#         # Skip if quiz already exists for this article
+#         existing = session.query(Quiz).filter_by(
+#             article_id=article.id
+#         ).first()
+#         if existing:
+#             print(f"  ⏭️ Already has quiz: {article.title[:50]}")
+#             continue
+
+#         print(f"  📝 Generating: {article.title[:60]}...")
+#         questions = generate_quiz_for_article(article)
+
+#         for q in questions:
+#             quiz = Quiz(
+#                 article_id  = article.id,
+#                 question    = q.get("question"),
+#                 option_a    = q.get("option_a"),
+#                 option_b    = q.get("option_b"),
+#                 option_c    = q.get("option_c"),
+#                 option_d    = q.get("option_d"),
+#                 correct     = q.get("correct"),
+#                 explanation = q.get("explanation"),
+#                 category    = article.category
+#             )
+#             session.add(quiz)
+#             total_saved += 1
+
+#         import time
+#         time.sleep(1)
+
+#     session.commit()
+#     session.close()
+#     print(f"\n✅ {total_saved} quiz questions saved")
+#     return total_saved
+
 def generate_daily_quiz():
-    """Generate quizzes for today's top articles."""
     session = SessionLocal()
-    print("DEBUG START")
 
-    total = session.query(Article).count()
-    print(f"Total articles in DB: {total}")
-    from datetime import datetime
+    from datetime import datetime, timedelta
+    import random
 
-    today = datetime.now().date()
+    # ❌ remove old quiz
+    session.query(Quiz).delete()
+    session.commit()
 
-    # Get today's top 10 articles (score 7+)
-    # articles = session.query(Article).filter(
-    #     Article.created_at >= today,
-    #     Article.exam_relevance_score >= 7
-    # ).order_by(Article.exam_relevance_score.desc()).limit(10).all()
+    three_days_ago = datetime.utcnow() - timedelta(days=3)
+
     articles = session.query(Article).filter(
-    Article.exam_relevance_score >= 5
-).order_by(Article.exam_relevance_score.desc()).limit(10).all()
+        Article.created_at >= three_days_ago,
+        Article.exam_relevance_score >= 5
+    ).order_by(Article.exam_relevance_score.desc()).all()
+
+    random.shuffle(articles)
+    articles = articles[:7]  # max ~20 questions
 
     print(f"\n🧠 Generating quizzes for {len(articles)} articles...")
 
     total_saved = 0
 
     for article in articles:
-        # Skip if quiz already exists for this article
-        existing = session.query(Quiz).filter_by(
-            article_id=article.id
-        ).first()
-        if existing:
-            print(f"  ⏭️ Already has quiz: {article.title[:50]}")
-            continue
-
         print(f"  📝 Generating: {article.title[:60]}...")
         questions = generate_quiz_for_article(article)
 
         for q in questions:
             quiz = Quiz(
-                article_id  = article.id,
-                question    = q.get("question"),
-                option_a    = q.get("option_a"),
-                option_b    = q.get("option_b"),
-                option_c    = q.get("option_c"),
-                option_d    = q.get("option_d"),
-                correct     = q.get("correct"),
-                explanation = q.get("explanation"),
-                category    = article.category
+                article_id=article.id,
+                question=q.get("question"),
+                option_a=q.get("option_a"),
+                option_b=q.get("option_b"),
+                option_c=q.get("option_c"),
+                option_d=q.get("option_d"),
+                correct=q.get("correct"),
+                explanation=q.get("explanation"),
+                category=article.category
             )
             session.add(quiz)
             total_saved += 1
 
-        import time
-        time.sleep(1)
-
     session.commit()
     session.close()
+
     print(f"\n✅ {total_saved} quiz questions saved")
     return total_saved

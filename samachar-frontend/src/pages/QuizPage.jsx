@@ -190,15 +190,48 @@ export default function QuizPage({ onBack }) {
   const [answered,  setAnswered]  = useState(false);
   const [loading,   setLoading]   = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const [fade, setFade] = useState(true);
 
   const { user, isSignedIn } = useUser(); // ← Clerk
 
-  useEffect(() => {
-    getQuiz().then(r => {
-      setQuestions(r.data?.questions || []);
-      setLoading(false);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getQuiz().then(r => {
+  //     setQuestions(r.data?.questions || []);
+  //     setLoading(false);
+  //   });
+  // }, []);
+//   const fetchQuiz = async () => {
+//   setLoading(true);
+//   try {
+//     const res = await axios.get(`${BASE_URL}/api/quiz?t=${Date.now()}`);
+//     setQuestions(res.data?.questions || []);
+//   } catch (err) {
+//     console.error("Quiz fetch error:", err);
+//   }
+//   setLoading(false);
+// };
+const fetchQuiz = async () => {
+  setFade(false); // fade out
+  setLoading(true);
+
+  try {
+    const res = await axios.get(`${BASE_URL}/api/quiz?t=${Date.now()}`);
+    
+    setTimeout(() => {
+      setQuestions(res.data?.questions || []);
+      setFade(true); // fade in
+    }, 200);
+
+  } catch (err) {
+    console.error("Quiz fetch error:", err);
+  }
+
+  setLoading(false);
+};
+
+useEffect(() => {
+  fetchQuiz();
+}, []);
 
   // Quiz finish hone pe auto-save
   useEffect(() => {
@@ -230,6 +263,30 @@ export default function QuizPage({ onBack }) {
       setAnswered(false);
     }
   };
+const handleNewQuiz = async () => {
+  setLoading(true);
+
+  try {
+    // backend pe fresh quiz generate
+    await axios.post(`${BASE_URL}/api/admin/generate-quiz`);
+
+    // new quiz fetch
+    await fetchQuiz();
+
+    // reset state
+    setCurrent(0);
+    setScore(0);
+    setSelected(null);
+    setAnswered(false);
+    setFinished(false);
+    setSubmitted(false);
+
+  } catch (err) {
+    console.error("New quiz error:", err);
+  }
+
+  setLoading(false);
+};
 
   if (loading) return (
     <div className="text-center py-20 text-gray-400">Loading quiz...</div>
@@ -274,14 +331,10 @@ export default function QuizPage({ onBack }) {
 
       <div className="flex gap-3 justify-center">
         <button
-          onClick={() => {
-            setCurrent(0); setScore(0);
-            setSelected(null); setAnswered(false);
-            setFinished(false); setSubmitted(false);
-          }}
+  onClick={handleNewQuiz}
           className="bg-orange-400 text-white px-6 py-2 rounded-lg hover:bg-orange-500"
         >
-          Retry
+          New Quiz
         </button>
         <button
           onClick={onBack}
@@ -304,12 +357,42 @@ export default function QuizPage({ onBack }) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-8">
+   /* Top bar */
+    // <div className="max-w-2xl mx-auto px-6 py-8">
+    <div className={`max-w-2xl mx-auto px-6 py-8 transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}`}>
       <div className="flex items-center justify-between mb-6">
         <button onClick={onBack} className="text-orange-500 text-sm hover:underline">← Back to News</button>
         <span className="text-sm text-gray-400">{current + 1} / {questions.length}</span>
       </div>
+       {/* ✅ NEW QUIZ BUTTON (ADD THIS HERE) */}
+      {/* <div className="flex justify-end mb-4">
+  <button
+    onClick={handleNewQuiz}
+    className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+  >
+    New Quiz
+  </button>
+</div> */}
 
+<div className="flex justify-end mb-4">
+  <button
+    onClick={handleNewQuiz}
+    disabled={loading}
+    className={`px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition
+      ${loading 
+        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+        : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+  >
+    {loading ? (
+      <>
+        <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+        Generating...
+      </>
+    ) : (
+      <>🔄 New Quiz</>
+    )}
+  </button>
+</div>
       <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
         <div
           className="bg-orange-400 h-2 rounded-full transition-all duration-300"
