@@ -10,6 +10,7 @@ from pipeline.database import SessionLocal, Article
 from pipeline.database import UserQuizAttempt
 from pydantic import BaseModel
 from fastapi import BackgroundTasks
+from starlette.routing import Route
 app = FastAPI(    #👉 Defines your API app..This will show auto docs at:http://localhost:8000/docs
     title="SAMACHAR.AI API",
     description="AI-powered current affairs for exam aspirants",
@@ -46,9 +47,13 @@ def article_to_dict(a): #👉 Converts DB object → JSON response
 
 # ─── Routes ───────────────────────────────────────────────
 
-@app.get("/")
+
+@app.api_route("/", methods=["GET", "HEAD"])
 def root():
     return {"message": "SAMACHAR.AI API is live 🚀"}
+# @app.get("/")
+# def root():
+#     return {"message": "SAMACHAR.AI API is live 🚀"}
 
 
 @app.get("/api/news/today")  #get todays news like, today`s article sorted by score
