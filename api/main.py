@@ -456,11 +456,9 @@ def get_today(limit: int = 50):
     # tomorrow start
     end = start + timedelta(days=1)
 
-    articles = session.query(Article)\
-        .filter(
-            Article.created_at >= start,
-            Article.created_at < end
-        )\
+    articles = session.query(Article)
+    last_24h = datetime.utcnow() - timedelta(hours=24)
+    filter(Article.created_at >= last_24h)\
         .order_by(Article.exam_relevance_score.desc())\
         .limit(limit)\
         .all()
