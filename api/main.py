@@ -441,24 +441,45 @@ def root():
 # ─────────────────────────────────────────────
 # 📰 NEWS APIs
 # ─────────────────────────────────────────────
+# @app.get("/api/news/today")
+# def get_today(limit: int = 50):
+#     session = SessionLocal()
+
+#     from datetime import datetime, timedelta
+
+#     # IST time
+#     now = datetime.utcnow() + timedelta(hours=5, minutes=30)
+
+#     # today start
+#     start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+#     # tomorrow start
+#     end = start + timedelta(days=1)
+
+#     articles = session.query(Article)
+#     last_24h = datetime.utcnow() - timedelta(hours=24)
+#     filter(Article.created_at >= last_24h)\
+#         .order_by(Article.exam_relevance_score.desc())\
+#         .limit(limit)\
+#         .all()
+
+#     session.close()
+
+#     return {
+#         "date": str(now.date()),
+#         "count": len(articles),
+#         "articles": [article_to_dict(a) for a in articles]
+#     }
+from datetime import datetime, timedelta
+
 @app.get("/api/news/today")
 def get_today(limit: int = 50):
     session = SessionLocal()
 
-    from datetime import datetime, timedelta
+    cutoff = datetime.utcnow() - timedelta(days=2)   # 🔥 FIX (2 days)
 
-    # IST time
-    now = datetime.utcnow() + timedelta(hours=5, minutes=30)
-
-    # today start
-    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-
-    # tomorrow start
-    end = start + timedelta(days=1)
-
-    articles = session.query(Article)
-    last_24h = datetime.utcnow() - timedelta(hours=24)
-    filter(Article.created_at >= last_24h)\
+    articles = session.query(Article)\
+        .filter(Article.created_at >= cutoff)\
         .order_by(Article.exam_relevance_score.desc())\
         .limit(limit)\
         .all()
@@ -466,11 +487,10 @@ def get_today(limit: int = 50):
     session.close()
 
     return {
-        "date": str(now.date()),
+        "date": str(datetime.utcnow().date()),
         "count": len(articles),
         "articles": [article_to_dict(a) for a in articles]
     }
-
 
 @app.get("/api/news/recent")
 def get_recent(limit: int = 50):
@@ -565,6 +585,21 @@ def get_stats():
 # 🧠 PIPELINE LOGIC (BACKGROUND)
 # ─────────────────────────────────────────────
 def actually_run_pipeline():
+    # from datetime import datetime, timedelta
+    # from pipeline.database import SessionLocal, Article
+
+    # 🧹 DELETE OLD ARTICLES (older than 2 days)
+    session = SessionLocal()
+    cutoff = datetime.utcnow() - timedelta(days=2)
+
+    session.query(Article).filter(
+        Article.created_at < cutoff
+    ).delete()
+
+    session.commit()
+    session.close()
+
+    # 🔽 existing code (same rakho)
     from pipeline.fetcher import fetch_headlines, save_raw_articles
     from pipeline.processor import process_all
     from pipeline.database import save_articles
@@ -575,13 +610,9 @@ def actually_run_pipeline():
 
     save_raw_articles(articles)
     processed = process_all(articles)
+
     if processed:
         save_articles(processed)
-
-
-def actually_run_quiz():
-    from pipeline.quiz_generator import generate_daily_quiz
-    generate_daily_quiz()
 
 # ─────────────────────────────────────────────
 # ⚡ TRIGGER ENDPOINTS (IMPORTANT FIX)
