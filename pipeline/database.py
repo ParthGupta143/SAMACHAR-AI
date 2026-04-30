@@ -45,7 +45,8 @@ class Quiz(Base):
     correct     = Column(String(1))  # "A", "B", "C", or "D"
     explanation = Column(Text)
     category    = Column(String(100))
-    created_at  = Column(DateTime, default=datetime.now)
+    # created_at  = Column(DateTime, default=datetime.now)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 class UserQuizAttempt(Base):
     __tablename__ = "user_quiz_attempts"
@@ -100,19 +101,20 @@ def save_articles(processed_articles):
 
         # Save new article
         db_article = Article(
-            article_hash        = article_hash,
-            title               = title,
-            category            = article.get("category", ""),
-            summary             = article.get("summary", ""),
-            key_points          = article.get("key_points", []),
-            important_facts     = article.get("important_facts", []),
-            exam_relevance_score = article.get("exam_relevance_score", 0),
-            is_exam_relevant    = article.get("is_exam_relevant", True),
-            verification_status = article.get("verification_status", ""),
-            source_name         = article.get("source", ""),
-            source_url          = article.get("source_url", ""),
-            published_at        = article.get("published", "")
-        )
+    article_hash        = article_hash,
+    title               = title,
+    category            = article.get("category", ""),
+    summary             = article.get("summary", ""),
+    key_points          = article.get("key_points", []),
+    important_facts     = article.get("important_facts", []),
+    exam_relevance_score = article.get("exam_relevance_score", 0),
+    is_exam_relevant    = article.get("is_exam_relevant", True),
+    verification_status = article.get("verification_status", ""),
+    source_name         = article.get("source", ""),
+    source_url          = article.get("source_url", ""),
+    published_at        = article.get("published", ""),
+    created_at          = datetime.utcnow()   # 🔥 ADD THIS LINE
+)
         session.add(db_article)
         existing_titles.append(title)  # add to list so next article also checked against it
         saved += 1
