@@ -444,10 +444,23 @@ def root():
 @app.get("/api/news/today")
 def get_today(limit: int = 50):
     session = SessionLocal()
-    start = datetime.utcnow() - timedelta(days=1)
+
+    from datetime import datetime, timedelta
+
+    # IST time
+    now = datetime.utcnow() + timedelta(hours=5, minutes=30)
+
+    # today start
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # tomorrow start
+    end = start + timedelta(days=1)
 
     articles = session.query(Article)\
-        .filter(Article.created_at >= start)\
+        .filter(
+            Article.created_at >= start,
+            Article.created_at < end
+        )\
         .order_by(Article.exam_relevance_score.desc())\
         .limit(limit)\
         .all()
@@ -455,7 +468,7 @@ def get_today(limit: int = 50):
     session.close()
 
     return {
-        "date": str(datetime.utcnow().date()),
+        "date": str(now.date()),
         "count": len(articles),
         "articles": [article_to_dict(a) for a in articles]
     }
