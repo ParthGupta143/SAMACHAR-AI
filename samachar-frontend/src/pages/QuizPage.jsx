@@ -176,6 +176,8 @@
 import { useState, useEffect } from 'react';
 // import { getQuiz } from '../api';
 import { useUser } from '@clerk/clerk-react';
+import { submitQuiz } from "../api";
+
 import axios from 'axios';
 // import { getQuiz, BASE_URL } from '../api';
 import { BASE_URL } from '../api';
@@ -192,7 +194,6 @@ export default function QuizPage({ onBack }) {
   const [loading,   setLoading]   = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [fade, setFade] = useState(true);
-
   const { user, isSignedIn } = useUser(); // ← Clerk
 
   // useEffect(() => {
@@ -262,15 +263,26 @@ useEffect(() => {
     }
   };
 
-  const handleNext = () => {
-    if (current + 1 >= questions.length) {
-      setFinished(true);
-    } else {
-      setCurrent(c => c + 1);
-      setSelected(null);
-      setAnswered(false);
+  const handleNext = async () => {
+  if (current + 1 < questions.length) {
+    setCurrent(current + 1);
+    setSelected(null);
+    setAnswered(false);
+  } else {
+    setFinished(true);
+
+    // 🔥 QUIZ COMPLETE → SAVE TO BACKEND
+    try {
+      await submitQuiz({
+        clerk_user_id: user.id,
+        score: score,
+        total: questions.length
+      });
+    } catch (err) {
+      console.error("Quiz save failed", err);
     }
-  };
+  }
+};
 const handleNewQuiz = async () => {
   setLoading(true);
 
