@@ -614,6 +614,10 @@ def actually_run_pipeline():
     if processed:
         save_articles(processed)
 
+def actually_run_quiz():
+    from pipeline.quiz_generator import generate_daily_quiz
+    generate_daily_quiz()
+
 # ─────────────────────────────────────────────
 # ⚡ TRIGGER ENDPOINTS (IMPORTANT FIX)
 # ─────────────────────────────────────────────
@@ -679,3 +683,24 @@ def submit_quiz(data: QuizSubmit):
     session.close()
 
     return {"status": "saved"}
+
+# from datetime import datetime, timedelta
+
+@app.get("/api/digest/weekly")
+def get_weekly_digest():
+    session = SessionLocal()
+
+    cutoff = datetime.utcnow() - timedelta(days=7)
+
+    articles = session.query(Article)\
+        .filter(Article.created_at >= cutoff)\
+        .order_by(Article.exam_relevance_score.desc())\
+        .limit(30)\
+        .all()
+
+    session.close()
+
+    return {
+        "count": len(articles),
+        "articles": [article_to_dict(a) for a in articles]
+    }
