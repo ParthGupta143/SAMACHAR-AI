@@ -719,7 +719,46 @@ def submit_quiz(data: QuizSubmit):
     finally:
         session.close()
 
-# from datetime import datetime, timedelta
+@app.get("/api/profile/{user_id}")
+def get_profile(user_id: str):
+    session = SessionLocal()
+
+    attempts = session.query(UserQuizAttempt)\
+        .filter(UserQuizAttempt.clerk_user_id == user_id)\
+        .order_by(UserQuizAttempt.created_at.desc())\
+        .all()
+
+    total_attempts = len(attempts)
+
+    if total_attempts == 0:
+        return {
+            "total_attempts": 0,
+            "avg_score": 0,
+            "best_score": 0,
+            "history": []
+        }
+
+    avg_score = sum(a.percentage for a in attempts) / total_attempts
+    best_score = max(a.percentage for a in attempts)
+
+    history = [
+        {
+            "date": a.created_at,
+            "score": a.score,
+            "total": a.total,
+            "percentage": a.percentage
+        }
+        for a in attempts
+    ]
+
+    session.close()
+
+    return {
+        "total_attempts": total_attempts,
+        "avg_score": round(avg_score, 2),
+        "best_score": round(best_score, 2),
+        "history": history
+    }
 
 @app.get("/api/digest/weekly")
 def get_weekly_digest():
