@@ -59,6 +59,19 @@ class UserQuizAttempt(Base):
     percentage   = Column(Integer)   # score/total * 100
     created_at   = Column(DateTime, default=datetime.now)
 
+class UserStats(Base):
+    __tablename__ = "user_stats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    clerk_user_id = Column(String, unique=True, index=True)
+
+    total_attempts = Column(Integer, default=0)
+    total_score = Column(Integer, default=0)
+    best_score = Column(Integer, default=0)
+
+    current_streak = Column(Integer, default=0)
+    last_attempt_date = Column(DateTime)
+
 def init_db():
     """Creates all tables if they don't exist."""
     Base.metadata.create_all(bind=engine) #👉 Creates table automatically in DB

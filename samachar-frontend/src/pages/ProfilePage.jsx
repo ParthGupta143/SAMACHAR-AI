@@ -1,9 +1,12 @@
 import { useUser } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
 import { getProfile } from '../api';
-
+import axios from "axios";
 export default function ProfilePage({ onBack }) {
+  const BASE_URL = "https://samachar-api.onrender.com";
+
   const { user } = useUser();
+  const [users, setUsers] = useState([]);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +18,11 @@ export default function ProfilePage({ onBack }) {
       }).catch(() => setLoading(false));
     }
   }, [user]);
+
+  useEffect(() => {
+  axios.get(`${BASE_URL}/api/leaderboard`)
+    .then(res => setUsers(res.data));
+}, []);
 
   if (loading) return (
     <div className="text-center py-20 text-gray-400">Loading profile...</div>
@@ -66,7 +74,15 @@ export default function ProfilePage({ onBack }) {
           </p>
           <p className="text-xs text-gray-500 mt-1">Best Score</p>
         </div>
-      </div>
+        <div className="bg-purple-50 rounded-xl p-4 text-center">
+    <p className="text-3xl font-bold text-purple-500">
+      {profile?.streak ?? 0}
+    </p>
+    <p className="text-xs text-gray-500 mt-1">Current Streak 🔥</p>
+  </div>
+
+</div>
+      
 
       {/* Quiz History */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6">

@@ -388,7 +388,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel
-
+from pipeline.database import SessionLocal, UserQuizAttempt, UserStats
 from pipeline.database import (
     SessionLocal, Article, Quiz,
     UserQuizAttempt, init_db
@@ -692,15 +692,45 @@ class QuizSubmit(BaseModel):
 
 
 @app.post("/api/quiz/submit")
+# def submit_quiz(data: QuizSubmit):
+#     session = SessionLocal()
+
+#     try:
+#         percentage = (data.score / data.total) * 100 if data.total > 0 else 0
+
+#         attempt = UserQuizAttempt(
+#             # user_id=data.clerk_user_id,   # 🔥 match field
+#             clerk_user_id=data.clerk_user_id,  
+#             score=data.score,
+#             total=data.total,
+#             percentage=percentage,
+#             created_at=datetime.utcnow()
+#         )
+
+#         session.add(attempt)
+#         session.commit()
+
+#         return {"message": "Quiz saved"}
+    
+
+
+#     except Exception as e:
+#         session.rollback()
+#         return {"error": str(e)}
+
+#     finally:
+#         session.close()
+
 def submit_quiz(data: QuizSubmit):
     session = SessionLocal()
 
     try:
+        # 🔢 percentage calculate
         percentage = (data.score / data.total) * 100 if data.total > 0 else 0
 
+        # 🧾 1. SAVE ATTEMPT
         attempt = UserQuizAttempt(
-            # user_id=data.clerk_user_id,   # 🔥 match field
-            clerk_user_id=data.clerk_user_id,  
+            clerk_user_id=data.clerk_user_id,
             score=data.score,
             total=data.total,
             percentage=percentage,
@@ -708,9 +738,53 @@ def submit_quiz(data: QuizSubmit):
         )
 
         session.add(attempt)
+
+        # 📊 2. UPDATE / CREATE USER STATS
+        stats = session.query(UserStats)\
+            .filter(UserStats.clerk_user_id == data.clerk_user_id)\
+            .first()
+
+        if not stats:
+            stats = UserStats(
+                clerk_user_id=data.clerk_user_id,
+                total_attempts=0,
+                total_score=0,
+                best_score=0,
+                current_streak=0,
+                last_attempt_date=None
+            )
+            session.add(stats)
+
+        # ➕ update stats
+        stats.total_attempts += 1
+        stats.total_score += data.score
+
+        # 🏆 best score update
+        if data.score > stats.best_score:
+            stats.best_score = data.score
+
+        # 🔥 STREAK LOGIC
+        today = datetime.utcnow().date()
+
+        if stats.last_attempt_date:
+            last_date = stats.last_attempt_date.date()
+
+            if last_date == today - timedelta(days=1):
+                stats.current_streak += 1
+            elif last_date != today:
+                stats.current_streak = 1
+        else:
+            stats.current_streak = 1
+
+        stats.last_attempt_date = datetime.utcnow()
+
+        # 💾 commit
         session.commit()
 
-        return {"message": "Quiz saved"}
+        return {
+            "message": "Quiz saved",
+            "streak": stats.current_streak
+        }
 
     except Exception as e:
         session.rollback()
@@ -719,17 +793,23 @@ def submit_quiz(data: QuizSubmit):
     finally:
         session.close()
 
+    
+
 @app.get("/api/profile/{user_id}")
 def get_profile(user_id: str):
     session = SessionLocal()
-
+    
     attempts = session.query(UserQuizAttempt)\
         .filter(UserQuizAttempt.clerk_user_id == user_id)\
         .order_by(UserQuizAttempt.created_at.desc())\
         .all()
 
     total_attempts = len(attempts)
+    stats = session.query(UserStats)\
+    .filter(UserStats.clerk_user_id == user_id)\
+    .first()
 
+    avg_score = (stats.total_score / stats.total_attempts) if stats.total_attempts else 0
     if total_attempts == 0:
         return {
             "total_attempts": 0,
@@ -740,6 +820,7 @@ def get_profile(user_id: str):
 
     avg_score = sum(a.percentage for a in attempts) / total_attempts
     best_score = max(a.percentage for a in attempts)
+    
 
     history = [
         {
@@ -754,11 +835,12 @@ def get_profile(user_id: str):
     session.close()
 
     return {
-        "total_attempts": total_attempts,
-        "avg_score": round(avg_score, 2),
-        "best_score": round(best_score, 2),
-        "history": history
-    }
+    "total_attempts": stats.total_attempts if stats else 0,
+    "avg_score": round(avg_score, 2),
+    "best_score": stats.best_score if stats else 0,
+    "streak": stats.current_streak if stats else 0,
+    "history": history
+}
 
 @app.get("/api/digest/weekly")
 def get_weekly_digest():
@@ -778,3 +860,24 @@ def get_weekly_digest():
         "count": len(articles),
         "articles": [article_to_dict(a) for a in articles]
     }
+
+
+@app.get("/api/leaderboard")
+def leaderboard():
+    session = SessionLocal()
+
+    users = session.query(UserStats)\
+        .order_by(UserStats.total_score.desc())\
+        .limit(10)\
+        .all()
+
+    session.close()
+
+    return [
+        {
+            "user_id": u.clerk_user_id,
+            "score": u.total_score,
+            "streak": u.current_streak
+        }
+        for u in users
+    ]
