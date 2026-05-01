@@ -662,27 +662,61 @@ def get_today_quiz():
 # ─────────────────────────────────────────────
 # 👤 USER QUIZ
 # ─────────────────────────────────────────────
+# class QuizSubmit(BaseModel):
+#     clerk_user_id: str
+#     score: int
+#     total: int
+
+# @app.post("/api/quiz/submit")
+# def submit_quiz(data: QuizSubmit):
+#     session = SessionLocal()
+
+#     attempt = UserQuizAttempt(
+#         clerk_user_id=data.clerk_user_id,
+#         score=data.score,
+#         total=data.total,
+#         percentage=round((data.score / data.total) * 100)
+#     )
+
+#     session.add(attempt)
+#     session.commit()
+#     session.close()
+
+#     return {"status": "saved"}
+
+
 class QuizSubmit(BaseModel):
     clerk_user_id: str
     score: int
     total: int
 
+
 @app.post("/api/quiz/submit")
 def submit_quiz(data: QuizSubmit):
     session = SessionLocal()
 
-    attempt = UserQuizAttempt(
-        clerk_user_id=data.clerk_user_id,
-        score=data.score,
-        total=data.total,
-        percentage=round((data.score / data.total) * 100)
-    )
+    try:
+        percentage = (data.score / data.total) * 100 if data.total > 0 else 0
 
-    session.add(attempt)
-    session.commit()
-    session.close()
+        attempt = UserQuizAttempt(
+            user_id=data.clerk_user_id,   # 🔥 match field
+            score=data.score,
+            total=data.total,
+            percentage=percentage,
+            created_at=datetime.utcnow()
+        )
 
-    return {"status": "saved"}
+        session.add(attempt)
+        session.commit()
+
+        return {"message": "Quiz saved"}
+
+    except Exception as e:
+        session.rollback()
+        return {"error": str(e)}
+
+    finally:
+        session.close()
 
 # from datetime import datetime, timedelta
 
