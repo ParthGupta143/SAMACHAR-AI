@@ -388,6 +388,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel
+from sqlalchemy import func
 from pipeline.database import SessionLocal, UserQuizAttempt, UserStats
 from pipeline.database import (
     SessionLocal, Article, Quiz,
@@ -862,22 +863,47 @@ def get_weekly_digest():
     }
 
 
+# @app.get("/api/leaderboard")
+# def leaderboard():
+#     session = SessionLocal()
+
+#     users = session.query(UserStats)\
+#         .order_by(UserStats.total_score.desc())\
+#         .limit(10)\
+#         .all()
+
+#     session.close()
+
+#     return [
+#         {
+#             "user_id": u.clerk_user_id,
+#             "score": u.total_score,
+#             "streak": u.current_streak
+#         }
+#         for u in users
+#     ]
+
 @app.get("/api/leaderboard")
 def leaderboard():
     session = SessionLocal()
 
-    users = session.query(UserStats)\
-        .order_by(UserStats.total_score.desc())\
-        .limit(10)\
-        .all()
+    users = session.query(
+        UserQuizAttempt.clerk_user_id,
+        func.avg(UserQuizAttempt.percentage).label("avg_score"),
+        func.max(UserQuizAttempt.percentage).label("best_score"),
+        func.count().label("attempts")
+    ).group_by(UserQuizAttempt.clerk_user_id)\
+     .order_by(func.avg(UserQuizAttempt.percentage).desc())\
+     .limit(10).all()
 
     session.close()
 
     return [
         {
-            "user_id": u.clerk_user_id,
-            "score": u.total_score,
-            "streak": u.current_streak
+            "user_id": u[0],
+            "avg_score": round(u[1], 2),
+            "best_score": u[2],
+            "attempts": u[3]
         }
         for u in users
     ]

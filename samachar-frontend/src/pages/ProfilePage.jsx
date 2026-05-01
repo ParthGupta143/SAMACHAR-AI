@@ -21,7 +21,8 @@ export default function ProfilePage({ onBack }) {
 
   useEffect(() => {
   axios.get(`${BASE_URL}/api/leaderboard`)
-    .then(res => setUsers(res.data));
+    .then(res => setUsers(res.data))
+    .catch(() => {});
 }, []);
 
   if (loading) return (
@@ -119,13 +120,28 @@ export default function ProfilePage({ onBack }) {
                       'bg-red-100 text-red-600'}`}>
                     {attempt.percentage}%
                   </span>
+                  
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+{/* Leaderboard */}
+<div className="bg-white rounded-2xl border p-6 mt-6">
+  <h3 className="font-bold mb-4">🏆 Leaderboard</h3>
 
+  {users.length === 0 ? (
+    <p>No leaderboard data yet</p>
+  ) : (
+    users.map((u, i) => (
+      <div key={i} className="flex justify-between py-2">
+        <span>#{i+1} {u.user_id}</span>
+        <span>{u.avg_score}%</span>
+      </div>
+    ))
+  )}
+</div>
     </div>
   );
 }
