@@ -53,6 +53,7 @@ class UserQuizAttempt(Base):
 
     id           = Column(Integer, primary_key=True, index=True)
     clerk_user_id = Column(String(200), index=True)  # Clerk se aata hai
+    # user_id = Column(String, index=True)      
     score        = Column(Integer)   # kitne sahi
     total        = Column(Integer)   # total questions
     percentage   = Column(Integer)   # score/total * 100

@@ -699,7 +699,8 @@ def submit_quiz(data: QuizSubmit):
         percentage = (data.score / data.total) * 100 if data.total > 0 else 0
 
         attempt = UserQuizAttempt(
-            user_id=data.clerk_user_id,   # 🔥 match field
+            # user_id=data.clerk_user_id,   # 🔥 match field
+            clerk_user_id=data.clerk_user_id,  
             score=data.score,
             total=data.total,
             percentage=percentage,
