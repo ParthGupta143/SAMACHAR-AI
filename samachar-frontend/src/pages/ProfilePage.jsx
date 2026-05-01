@@ -136,7 +136,7 @@ export default function ProfilePage({ onBack }) {
   ) : (
     users.map((u, i) => (
       <div key={i} className="flex justify-between py-2">
-        <span>#{i+1} {u.name}</span>
+        <span>#{i+1} {u.user_id}</span>
         <span>{u.avg_score}%</span>
       </div>
     ))

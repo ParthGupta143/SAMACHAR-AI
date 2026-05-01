@@ -275,7 +275,7 @@ useEffect(() => {
     try {
       await submitQuiz({
         clerk_user_id: user.id,
-        user_name: user.fullName,   // ✅ ADD THIS
+        // user_name: user.fullName,   // ✅ ADD THIS
         score: score,
         total: questions.length
       });
