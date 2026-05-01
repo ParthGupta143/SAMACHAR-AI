@@ -32,3 +32,6 @@ export const searchNews      = (q)           => axios.get(`${BASE_URL}/api/news/
 export const getQuiz         = ()            => axios.get(`${BASE_URL}/api/quiz/today`);
 export const getWeeklyDigest = ()            => axios.get(`${BASE_URL}/api/digest/weekly`);
 export const getProfile      = (clerkUserId) => axios.get(`${BASE_URL}/api/profile/${clerkUserId}`);
+export const submitQuiz = (data) => {
+  return axios.post("/api/quiz/submit", data);
+};
