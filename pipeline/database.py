@@ -53,6 +53,8 @@ class UserQuizAttempt(Base):
 
     id           = Column(Integer, primary_key=True, index=True)
     clerk_user_id = Column(String(200), index=True)  # Clerk se aata hai
+
+    user_name = Column(String(200)) 
     # user_id = Column(String, index=True)      
     score        = Column(Integer)   # kitne sahi
     total        = Column(Integer)   # total questions
@@ -64,7 +66,7 @@ class UserStats(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     clerk_user_id = Column(String, unique=True, index=True)
-
+    
     total_attempts = Column(Integer, default=0)
     total_score = Column(Integer, default=0)
     best_score = Column(Integer, default=0)

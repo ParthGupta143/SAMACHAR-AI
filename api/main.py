@@ -686,13 +686,9 @@ def get_today_quiz():
 #     return {"status": "saved"}
 
 
-class QuizSubmit(BaseModel):
-    clerk_user_id: str
-    score: int
-    total: int
 
 
-@app.post("/api/quiz/submit")
+
 # def submit_quiz(data: QuizSubmit):
 #     session = SessionLocal()
 
@@ -722,6 +718,12 @@ class QuizSubmit(BaseModel):
 #     finally:
 #         session.close()
 
+class QuizSubmit(BaseModel):
+    clerk_user_id: str
+    user_name: str   # ✅ ADD
+    score: int
+    total: int
+@app.post("/api/quiz/submit")
 def submit_quiz(data: QuizSubmit):
     session = SessionLocal()
 
@@ -732,6 +734,7 @@ def submit_quiz(data: QuizSubmit):
         # 🧾 1. SAVE ATTEMPT
         attempt = UserQuizAttempt(
             clerk_user_id=data.clerk_user_id,
+            user_name=data.user_name,   # ✅ ADD
             score=data.score,
             total=data.total,
             percentage=percentage,
@@ -889,6 +892,7 @@ def leaderboard():
 
     users = session.query(
         UserQuizAttempt.clerk_user_id,
+        UserQuizAttempt.user_name,   # ✅ ADD
         func.avg(UserQuizAttempt.percentage).label("avg_score"),
         func.max(UserQuizAttempt.percentage).label("best_score"),
         func.count().label("attempts")
@@ -901,6 +905,7 @@ def leaderboard():
     return [
         {
             "user_id": u[0],
+            "name": u[1],   # ✅ ADD
             "avg_score": round(u[1], 2),
             "best_score": u[2],
             "attempts": u[3]
