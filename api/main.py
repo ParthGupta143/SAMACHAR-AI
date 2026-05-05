@@ -622,7 +622,11 @@ def actually_run_quiz():
 # ─────────────────────────────────────────────
 # ⚡ TRIGGER ENDPOINTS (IMPORTANT FIX)
 # ─────────────────────────────────────────────
-@app.get("/trigger-pipeline")
+# @app.get("/trigger-pipeline")
+# def trigger_pipeline(background_tasks: BackgroundTasks):
+#     background_tasks.add_task(actually_run_pipeline)
+#     return {"status": "pipeline started"}
+@app.api_route("/trigger-pipeline", methods=["GET", "HEAD"])
 def trigger_pipeline(background_tasks: BackgroundTasks):
     background_tasks.add_task(actually_run_pipeline)
     return {"status": "pipeline started"}
