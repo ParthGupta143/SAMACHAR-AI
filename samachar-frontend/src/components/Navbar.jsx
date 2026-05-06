@@ -141,7 +141,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-reac
 import { useState } from 'react';
 
 // export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile }) {
-export default function Navbar({ onSearch, onQuiz, onDigest, onHome, language, setLanguage }) {
+export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile, language, setLanguage }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
