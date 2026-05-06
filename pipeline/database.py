@@ -25,10 +25,10 @@ class Article(Base):
     key_points          = Column(JSON)  #<---
     important_facts     = Column(JSON)  #json field--->👉 You’re storing lists directly → very good design
     #for hindi translation: Bilingual
-    title_hi       = Column(Text, nullable=True)
-    summary_hi     = Column(Text, nullable=True)
-    key_points_hi  = Column(JSON, nullable=True)
-    important_facts_hi = Column(JSON, nullable=True)
+    # title_hi       = Column(Text, nullable=True)
+    # summary_hi     = Column(Text, nullable=True)
+    # key_points_hi  = Column(JSON, nullable=True)
+    # important_facts_hi = Column(JSON, nullable=True)
     exam_relevance_score = Column(Integer)  #scoring
     is_exam_relevant    = Column(Boolean, default=True)
     verification_status = Column(String(50))

@@ -2,13 +2,19 @@ import { useState, useEffect } from 'react';
 import { getArticle } from '../api';
 import { CATEGORY_COLORS } from '../components/CategorySidebar';
 
-export default function ArticleDetail({ articleId, onBack }) {
+// export default function ArticleDetail({ articleId, onBack }) {
+//   const [article, setArticle] = useState(null);
+
+//   useEffect(() => {
+//     getArticle(articleId).then(r => setArticle(r.data));
+//   }, [articleId]);
+export default function ArticleDetail({ articleId, onBack, language }) {
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
-    getArticle(articleId).then(r => setArticle(r.data));
-  }, [articleId]);
-
+    const fetchFn = language === 'hi' ? getArticleHindi : getArticle;
+    fetchFn(articleId).then(r => setArticle(r.data));
+  }, [articleId, language]);
   if (!article) return (
     <div className="text-center py-20 text-gray-400">Loading...</div>
   );

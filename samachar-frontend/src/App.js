@@ -162,8 +162,8 @@ export default function App() {
         onDigest={() => { setShowDigest(true); setShowQuiz(false); setShowProfile(false); }}
         onHome={goHome}
         onProfile={goProfile} // ← new
-        language={language}
-        setLanguage={setLanguage}
+        // language={language}
+        // setLanguage={setLanguage}
       />
 
       {showProfile
@@ -172,21 +172,10 @@ export default function App() {
           ? <QuizPage onBack={goHome} />
           : showDigest
             ? <WeeklyDigest
-        onBack={goHome}
-        onArticleClick={setCurrentArticle}
-        language={language}
-      />
+        onBack={goHome} onArticleClick={setCurrentArticle}/>
             : currentArticle
-              ? <ArticleDetail
-  articleId={currentArticle}
-  onBack={goHome}
-  language={language}
-/>
-              : <Home
-  onArticleClick={setCurrentArticle}
-  searchQuery={searchQuery}
-  language={language}
-/>
+              ? <ArticleDetail articleId={currentArticle} onBack={goHome} />
+              :<Home onArticleClick={setCurrentArticle} searchQuery={searchQuery} />
       }
     </div>
   );

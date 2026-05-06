@@ -35,6 +35,7 @@ export const getProfile      = (clerkUserId) => axios.get(`${BASE_URL}/api/profi
 export const submitQuiz = (data) => {
   return axios.post("/api/quiz/submit", data);
 };
+export const getArticleHindi = (id) => axios.get(`${BASE}/api/news/${id}/hindi`);
 // export const submitQuiz = (data) => {
 //   return axios.post(`${BASE_URL}/api/quiz/submit`, data);
 // };
