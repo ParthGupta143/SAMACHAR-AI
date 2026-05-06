@@ -140,7 +140,8 @@
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { useState } from 'react';
 
-export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile }) {
+// export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile }) {
+export default function Navbar({ onSearch, onQuiz, onDigest, onHome, language, setLanguage }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -173,7 +174,30 @@ export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile }
           menuOpen ? 'flex' : 'hidden'
         }`}
       >
+      {/* Language Toggle */}
+<div className="flex bg-gray-800 rounded-lg p-1">
+  <button
+    onClick={() => setLanguage('en')}
+    className={`px-3 py-1 rounded text-sm font-medium transition ${
+      language === 'en'
+        ? 'bg-orange-400 text-white'
+        : 'text-gray-400'
+    }`}
+  >
+    EN
+  </button>
 
+  <button
+    onClick={() => setLanguage('hi')}
+    className={`px-3 py-1 rounded text-sm font-medium transition ${
+      language === 'hi'
+        ? 'bg-orange-400 text-white'
+        : 'text-gray-400'
+    }`}
+  >
+    हि
+  </button>
+</div>
         {/* Buttons */}
         <button
           onClick={onDigest}
@@ -192,7 +216,9 @@ export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile }
         {/* Search */}
         <input
           onChange={e => onSearch(e.target.value)}
-          placeholder="Search news..."
+          placeholder={language === 'hi'
+  ? 'समाचार खोजें...'
+  : 'Search news...'}
           className="bg-gray-800 text-white px-4 py-2 rounded-lg w-full md:w-64 text-sm outline-none focus:ring-2 focus:ring-orange-400"
         />
 

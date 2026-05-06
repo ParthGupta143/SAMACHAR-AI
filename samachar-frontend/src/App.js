@@ -162,6 +162,8 @@ export default function App() {
         onDigest={() => { setShowDigest(true); setShowQuiz(false); setShowProfile(false); }}
         onHome={goHome}
         onProfile={goProfile} // ← new
+        language={language}
+        setLanguage={setLanguage}
       />
 
       {showProfile
