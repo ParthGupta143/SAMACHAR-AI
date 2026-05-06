@@ -519,7 +519,28 @@ def get_article(article_id: int):
 
     return article_to_dict(article)
 
+@app.get("/api/news/{article_id}/hindi")
+def get_article_hindi(article_id: int):
+    """Get article in Hindi — translates on demand if not cached."""
+    from pipeline.translator import translate_article_to_hindi
 
+    article = translate_article_to_hindi(article_id)
+
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+
+    return {
+        "id":                   article.id,
+        "title":                article.title_hi or article.title,
+        "category":             article.category,
+        "summary":              article.summary_hi or article.summary,
+        "key_points":           article.key_points_hi or article.key_points,
+        "important_facts":      article.important_facts_hi or article.important_facts,
+        "exam_relevance_score": article.exam_relevance_score,
+        "verification_status":  article.verification_status,
+        "source_name":          article.source_name,
+        "source_url":           article.source_url,
+    }
 @app.get("/api/news/search/query")
 def search(q: str = Query(..., min_length=2), limit: int = 20):
     session = SessionLocal()

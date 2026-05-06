@@ -136,7 +136,9 @@ export default function App() {
   const [showQuiz,       setShowQuiz]       = useState(false);
   const [showDigest,     setShowDigest]     = useState(false);
   const [showProfile,    setShowProfile]    = useState(false); // ← new
+  const [language, setLanguage] = useState('en'); // 'en' or 'hi'
 
+  
   const goHome = () => {
     setCurrentArticle(null);
     setShowQuiz(false);
@@ -167,10 +169,22 @@ export default function App() {
         : showQuiz
           ? <QuizPage onBack={goHome} />
           : showDigest
-            ? <WeeklyDigest onBack={goHome} onArticleClick={setCurrentArticle} />
+            ? <WeeklyDigest
+        onBack={goHome}
+        onArticleClick={setCurrentArticle}
+        language={language}
+      />
             : currentArticle
-              ? <ArticleDetail articleId={currentArticle} onBack={goHome} />
-              : <Home onArticleClick={setCurrentArticle} searchQuery={searchQuery} />
+              ? <ArticleDetail
+  articleId={currentArticle}
+  onBack={goHome}
+  language={language}
+/>
+              : <Home
+  onArticleClick={setCurrentArticle}
+  searchQuery={searchQuery}
+  language={language}
+/>
       }
     </div>
   );

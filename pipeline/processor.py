@@ -3,6 +3,7 @@ import json
 import os
 from dotenv import load_dotenv
 import time
+import gc
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -90,7 +91,7 @@ def process_all(articles):
     """
     print(f"Testing Groq connection...")
     # Limit to 40 per run to stay within Groq free tier
-    articles = articles[:40]
+    articles = articles[:25] #reduce from 40 to 25
     print(f"\n🤖 Processing {len(articles)} articles (capped at 50)...\n")
     try:
         test = client.chat.completions.create(
@@ -131,6 +132,7 @@ def process_all(articles):
         print(f"  ✅ Kept | Category: {result['category']} | Score: {score}")
         processed.append(result)
 
+    gc.collect()  # Free memory after processing
     print(f"\n📊 Results: {len(processed)} kept, {skipped} filtered out")
     return processed
 

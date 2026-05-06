@@ -79,7 +79,8 @@ name: SAMACHAR.AI Auto Pipeline
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 6 * * *'   # 6 AM UTC = 11:30 AM IST
+    - cron: '0 14 * * *'  # 2 PM UTC = 7:30 PM IST
   workflow_dispatch:
 
 jobs:

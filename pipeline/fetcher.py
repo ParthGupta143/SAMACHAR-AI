@@ -148,7 +148,7 @@ def fetch_headlines():
         try:
             feed = feedparser.parse(feed_url)
             
-            for entry in feed.entries[:10]:  # max 10 per source for now
+            for entry in feed.entries[:5]:  # max 10 per source for now #reduce max 10 to max 5
                 article = {
                     "title": str(entry.get("title", "No title")),
                     "url": str(entry.get("link", "")),
