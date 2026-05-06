@@ -46,8 +46,8 @@ class Quiz(Base):
     explanation = Column(Text)
     category    = Column(String(100))
     #for hindi translation: Bilingual
-    title_hi       = Column(Text, nullable=True)
-    summary_hi     = Column(Text, nullable=True)
+    # title_hi       = Column(Text, nullable=True)
+    # summary_hi     = Column(Text, nullable=True)
     key_points_hi  = Column(JSON, nullable=True)
     important_facts_hi = Column(JSON, nullable=True)
     # created_at  = Column(DateTime, default=datetime.now)

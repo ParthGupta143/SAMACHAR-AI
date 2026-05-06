@@ -170,3 +170,10 @@ def generate_daily_quiz():
 
     print(f"\n✅ {total_saved} quiz questions saved")
     return total_saved
+
+# print(f"\n✅ {total_saved} quiz questions saved")
+# return total_saved
+
+
+if __name__ == "__main__":
+    generate_daily_quiz()
