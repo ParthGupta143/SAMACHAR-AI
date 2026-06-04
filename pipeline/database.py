@@ -8,7 +8,12 @@ from dotenv import load_dotenv
 load_dotenv()  
 
 # Connect to database
-engine = create_engine(os.getenv("DATABASE_URL")) #👉 This connects your app → PostgreSQL
+# engine = create_engine(os.getenv("DATABASE_URL")) #👉 This connects your app → PostgreSQL
+engine = create_engine(
+    os.getenv("DATABASE_URL"),
+    pool_pre_ping=True,
+    pool_recycle=300
+)
 SessionLocal = sessionmaker(bind=engine) #engine = connection, sessionlocal = db session
 Base = declarative_base()  #base = table blueprint
 
