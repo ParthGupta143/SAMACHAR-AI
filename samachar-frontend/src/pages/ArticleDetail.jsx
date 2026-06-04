@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getArticle } from '../api';
+// import { getArticle } from '../api';
+import { getArticle, getArticleHindi } from '../api';
 import { CATEGORY_COLORS } from '../components/CategorySidebar';
 
 // export default function ArticleDetail({ articleId, onBack }) {
