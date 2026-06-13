@@ -1,5 +1,12 @@
+# venv/
+# .env
+# __pycache__/
+# data/
+# desktop.ini
 venv/
 .env
 __pycache__/
 data/
 desktop.ini
+node_modules/
+build/

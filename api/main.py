@@ -80,30 +80,30 @@
 #     }
 
 
-# @app.get("/api/news/category/{category_name}")  #category filter: eg--/api/news/category/Economy
-# def get_by_category(category_name: str, limit: int = 20):
-#     """Get articles filtered by category."""
-#     session = SessionLocal()
+@app.get("/api/news/category/{category_name}")  #category filter: eg--/api/news/category/Economy
+def get_by_category(category_name: str, limit: int = 20):
+    """Get articles filtered by category."""
+    session = SessionLocal()
 
-#     articles = session.query(Article)\
-#         .filter(Article.category.ilike(f"%{category_name}%"))\
-#         .order_by(Article.created_at.desc())\
-#         .limit(limit)\
-#         .all()
+    articles = session.query(Article)\
+        .filter(Article.category.ilike(f"%{category_name}%"))\
+        .order_by(Article.created_at.desc())\
+        .limit(limit)\
+        .all()
 
-#     session.close()
+    session.close()
 
-#     if not articles:
-#         raise HTTPException(   #error handling
-#             status_code=404,
-#             detail=f"No articles found for category: {category_name}"
-#         )
+    if not articles:
+        raise HTTPException(   #error handling
+            status_code=404,
+            detail=f"No articles found for category: {category_name}"
+        )
 
-#     return {
-#         "category": category_name,
-#         "count":    len(articles),
-#         "articles": [article_to_dict(a) for a in articles]
-#     }
+    return {
+        "category": category_name,
+        "count":    len(articles),
+        "articles": [article_to_dict(a) for a in articles]
+    }
 
 # @app.get("/api/news/recent")
 # def get_recent(limit: int = 50):

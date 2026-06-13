@@ -122,7 +122,9 @@
 //   );
 // }
 
-import { useState } from 'react';
+// import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getCategories } from './api';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ArticleDetail from './pages/ArticleDetail';
@@ -136,6 +138,13 @@ export default function App() {
   const [showQuiz,       setShowQuiz]       = useState(false);
   const [showDigest,     setShowDigest]     = useState(false);
   const [showProfile,    setShowProfile]    = useState(false); // ← new
+  const [categories, setCategories] = useState([]);
+const [selectedCategory, setSelectedCategory] = useState(null);
+useEffect(() => {
+  getCategories()
+    .then(r => setCategories(r.data.categories || []))
+    .catch(console.error);
+}, []);
   // const [language, setLanguage] = useState('en'); // 'en' or 'hi'
 
   
@@ -145,6 +154,7 @@ export default function App() {
     setShowDigest(false);
     setShowProfile(false); // ← new
     setSearchQuery('');
+    setSelectedCategory(null);// reset point
   };
 
   const goProfile = () => {
@@ -156,15 +166,24 @@ export default function App() {
 
   return (
     <div className="font-sans">
-      <Navbar
-        onSearch={setSearchQuery}
-        onQuiz={() => { setShowQuiz(true); setShowDigest(false); setShowProfile(false); }}
-        onDigest={() => { setShowDigest(true); setShowQuiz(false); setShowProfile(false); }}
-        onHome={goHome}
-        onProfile={goProfile} // ← new
-        // language={language}
-        // setLanguage={setLanguage}
-      />
+     <Navbar
+  onSearch={setSearchQuery}
+  onQuiz={() => {
+    setShowQuiz(true);
+    setShowDigest(false);
+    setShowProfile(false);
+  }}
+  onDigest={() => {
+    setShowDigest(true);
+    setShowQuiz(false);
+    setShowProfile(false);
+  }}
+  onHome={goHome}
+  onProfile={goProfile}
+  categories={categories}
+  selectedCategory={selectedCategory}
+  onCategorySelect={setSelectedCategory}
+/>
 
       {showProfile
         ? <ProfilePage onBack={goHome} />
@@ -175,7 +194,12 @@ export default function App() {
         onBack={goHome} onArticleClick={setCurrentArticle}/>
             : currentArticle
               ? <ArticleDetail articleId={currentArticle} onBack={goHome} />
-              :<Home onArticleClick={setCurrentArticle} searchQuery={searchQuery} />
+              :<Home
+  onArticleClick={setCurrentArticle}
+  searchQuery={searchQuery}
+  onSearch={setSearchQuery}
+  selectedCategory={selectedCategory}
+/>
       }
     </div>
   );

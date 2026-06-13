@@ -1,35 +1,55 @@
 // JSX stands for JavaScript XML, a syntax extension for JavaScript primarily used with React to describe what the user interface should look lik
 
 import { useState, useEffect } from 'react';
-import { getCategory, getCategories, getStats, searchNews, getRecent } from '../api';
+import { getCategory, getStats, searchNews, getRecent } from '../api';
 import NewsCard from '../components/NewsCard';
-import CategorySidebar from '../components/CategorySidebar';
+// import CategorySidebar from '../components/CategorySidebar';
 import SkeletonCard from '../components/SkeletonCard';
-export default function Home({ onArticleClick, searchQuery }) {
+export default function Home({
+  onArticleClick,
+  searchQuery,
+  onSearch,
+  selectedCategory
+}) {
   const [articles,   setArticles]   = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [stats,      setStats]      = useState(null);
-  const [selected,   setSelected]   = useState(null);
   const [loading,    setLoading]    = useState(true);
 
-  useEffect(() => {
-    getCategories().then(r => setCategories(r.data.categories));
-    getStats().then(r => setStats(r.data));
-  }, []);
+//   useEffect(() => {
+//   getStats().then(r => setStats(r.data));
+// }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    const fetch = searchQuery
-      ? searchNews(searchQuery)
-      : selected
-        ? getCategory(selected)
-        : getRecent();
+//   useEffect(() => {
+//     setLoading(true);
+//     const fetch = searchQuery
+//   ? searchNews(searchQuery)
+//   : selectedCategory
+//     ? getCategory(selectedCategory)
+//     : getRecent();
 
-    fetch.then(r => {
-      setArticles(r.data.articles || []);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, [selected, searchQuery]);
+//     fetch.then(r => {
+//       setArticles(r.data.articles || []);
+//       setLoading(false);
+//     }).catch(() => setLoading(false));
+//   }, [selectedCategory, searchQuery]);
+useEffect(() => {
+  console.log("Selected Category:", selectedCategory);
+
+  setLoading(true);
+
+  const fetch = searchQuery
+    ? searchNews(searchQuery)
+    : selectedCategory
+      ? getCategory(selectedCategory)
+      : getRecent();
+
+  fetch.then(r => {
+    console.log("API Response:", r.data);
+    setArticles(r.data.articles || []);
+    setLoading(false);
+  });
+}, [selectedCategory, searchQuery]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -64,26 +84,37 @@ export default function Home({ onArticleClick, searchQuery }) {
       
 
       {/* <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6"> */}
-      <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6">
+      <div className="max-w-7xl mx-auto px-4 py-4">
 
   {/* Sidebar */}
   {/* <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto"> */}
-  <div className="w-full lg:w-64 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] overflow-y-auto">
+  {/* <div className="w-full lg:w-64 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] overflow-y-auto">
     <CategorySidebar
       categories={categories}
       selected={selected}
       onSelect={setSelected}
     />
-  </div>
+  </div> */}
 
   {/* Articles */}
-  <div className="flex-1 overflow-y-auto h-[calc(100vh-80px)]">
+  <div>
+    <div className="mb-6">
+  <input
+    type="text"
+    placeholder="Search current affairs..."
+    value={searchQuery}
+    onChange={(e) => onSearch(e.target.value)}
+    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+  />
+</div>
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-lg font-bold text-gray-800">
-              {searchQuery
-                ? `Results for "${searchQuery}"`
-                : selected || "Today's Current Affairs"}
-            </h1>
+  {searchQuery
+    ? `Results for "${searchQuery}"`
+    : selectedCategory
+      ? selectedCategory
+      : "Today's Current Affairs"}
+</h1>
             <span className="text-sm text-gray-400">{articles.length} articles</span>
           </div>
 
