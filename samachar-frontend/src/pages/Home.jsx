@@ -63,10 +63,12 @@ export default function Home({ onArticleClick, searchQuery }) {
 )}
       
 
-      <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6">
+      {/* <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6"> */}
+      <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6">
 
   {/* Sidebar */}
-  <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto">
+  {/* <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto"> */}
+  <div className="w-full lg:w-64 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] overflow-y-auto">
     <CategorySidebar
       categories={categories}
       selected={selected}
