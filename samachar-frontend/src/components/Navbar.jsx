@@ -160,12 +160,18 @@ export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile})
         </div>
 
         {/* 🔥 Hamburger (mobile only) */}
-        <button
+        {/* <button
           className="md:hidden text-2xl"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           ☰
-        </button>
+        </button> */}
+        <button
+      className="lg:hidden"
+      onClick={() => setMenuOpen(true)}
+    >
+      ☰
+    </button>
       </div>
 
       {/* 🔥 MENU SECTION */}
@@ -222,6 +228,34 @@ export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile})
         </SignedIn>
 
       </div>
+      {menuOpen && (
+  <>
+    <div
+      className="fixed inset-0 bg-black/40 z-40"
+      onClick={() => setMenuOpen(false)}
+    />
+
+    <div className="fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-xl p-5">
+
+      <button
+        className="mb-4"
+        onClick={() => setMenuOpen(false)}
+      >
+        ✕
+      </button>
+
+      <div className="space-y-3">
+        <button>👤 My Profile</button>
+        <button>🧠 Daily Quiz</button>
+        <button>📄 Weekly Digest</button>
+        <button>⭐ Saved Articles</button>
+        <button>⚙ Settings</button>
+        <button>🚪 Logout</button>
+      </div>
+
+    </div>
+  </>
+)}
     </nav>
   );
 }

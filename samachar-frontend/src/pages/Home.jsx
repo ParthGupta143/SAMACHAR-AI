@@ -66,7 +66,8 @@ export default function Home({ onArticleClick, searchQuery }) {
       <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6">
 
   {/* Sidebar */}
-  <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto">
+  {/* <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto"> */}
+  <div className="hidden lg:block w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto">
     <CategorySidebar
       categories={categories}
       selected={selected}
