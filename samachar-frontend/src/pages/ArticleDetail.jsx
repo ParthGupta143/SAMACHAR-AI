@@ -23,7 +23,8 @@ export default function ArticleDetail({ articleId, onBack, language }) {
   const colorClass = CATEGORY_COLORS[article.category] || "bg-gray-100 text-gray-700";
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    // <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-4 md:px-6 py-6">
       <button
         onClick={onBack}
         className="text-orange-500 text-sm mb-6 hover:underline"
