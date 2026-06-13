@@ -197,7 +197,6 @@ useEffect(() => {
               :<Home
   onArticleClick={setCurrentArticle}
   searchQuery={searchQuery}
-  onSearch={setSearchQuery}
   selectedCategory={selectedCategory}
 />
       }

@@ -8,7 +8,6 @@ import SkeletonCard from '../components/SkeletonCard';
 export default function Home({
   onArticleClick,
   searchQuery,
-  onSearch,
   selectedCategory
 }) {
   const [articles,   setArticles]   = useState([]);
@@ -99,15 +98,7 @@ useEffect(() => {
 
   {/* Articles */}
   <div>
-    <div className="mb-6">
-  <input
-    type="text"
-    placeholder="Search current affairs..."
-    value={searchQuery}
-    onChange={(e) => onSearch(e.target.value)}
-    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-  />
-</div>
+    
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-lg font-bold text-gray-800">
   {searchQuery
