@@ -136,7 +136,7 @@ export default function App() {
   const [showQuiz,       setShowQuiz]       = useState(false);
   const [showDigest,     setShowDigest]     = useState(false);
   const [showProfile,    setShowProfile]    = useState(false); // ← new
-  // const [language, setLanguage] = useState('en'); // 'en' or 'hi'
+  const [language, setLanguage] = useState('en'); // 'en' or 'hi'
 
   
   const goHome = () => {
