@@ -67,6 +67,17 @@ export default function Navbar({
   selectedCategory,
   onCategorySelect,
 }) {
+const categoryIcons = {
+  "Politics & Governance": "🏛️",
+  "Defense & Security": "🛡️",
+  "Economy & Banking": "💰",
+  "Science & Technology": "🚀",
+  "Environment & Ecology": "🌿",
+  "International Relations": "🌍",
+  "Government Schemes & Policies": "📜",
+  "Judiciary & Legal": "⚖️",
+  "Appointments & Resignations": "👤",
+}; 
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -135,21 +146,29 @@ export default function Navbar({
           />
 
           {/* DRAWER */}
-          <div className="fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-xl overflow-y-auto">
+          {/* <div className="fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-xl overflow-y-auto"> */}
+          <div
+  className={`fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-2xl overflow-y-auto
+  transform transition-transform duration-300 ease-in-out
+  ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+>
 
             {/* HEADER */}
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="font-bold text-lg text-gray-800">
-                Menu
-              </h2>
+            <div className="flex items-center justify-between p-5 border-b bg-gradient-to-r from-orange-500 to-orange-400 text-white">
+  <div>
+    <h2 className="font-bold text-lg">SAMACHAR.AI</h2>
+    <p className="text-xs opacity-80">
+      Current Affairs Dashboard
+    </p>
+  </div>
 
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="text-2xl text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
+  <button
+    onClick={() => setMenuOpen(false)}
+    className="text-2xl"
+  >
+    ✕
+  </button>
+</div>
 
             <div className="p-4 space-y-2">
 
@@ -171,6 +190,7 @@ export default function Navbar({
               <h3 className="font-semibold text-gray-700 px-3">
                 Categories
               </h3>
+          
 
               {categories.map((cat) => (
                 <button
@@ -179,13 +199,13 @@ export default function Navbar({
                     onCategorySelect(cat.name);
                     setMenuOpen(false);
                   }}
-                  className={`w-full text-left p-3 rounded-lg transition ${
+                  className={`w-full text-left p-3 rounded-xl transition-all duration-200 ${
                     selectedCategory === cat.name
-                      ? 'bg-orange-100 text-orange-600'
+                      ? 'bg-orange-500 text-white shadow-md'
                       : 'hover:bg-gray-100'
                   }`}
                 >
-                  {cat.name}
+                  {categoryIcons[cat.name] || "📌"} {cat.name}
                 </button>
               ))}
 
@@ -227,9 +247,30 @@ export default function Navbar({
               <div className="border-t my-3"></div>
 
               {/* CLERK USER */}
-              <div className="px-3 py-2">
-                <UserButton afterSignOutUrl="/" />
-              </div>
+              {/* ACCOUNT */}
+<div className="border-t my-3"></div>
+
+<div className="px-3 py-2">
+  <p className="text-xs uppercase text-gray-400 mb-2">
+    Account
+  </p>
+
+  <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
+    <span className="text-sm font-medium text-gray-700">
+      Signed In
+    </span>
+
+    <UserButton
+      afterSignOutUrl="/"
+      appearance={{
+        elements: {
+          avatarBox:
+            "w-10 h-10 ring-2 ring-orange-200 hover:ring-orange-400 transition"
+        }
+      }}
+    />
+  </div>
+</div>
             </div>
           </div>
         </>
