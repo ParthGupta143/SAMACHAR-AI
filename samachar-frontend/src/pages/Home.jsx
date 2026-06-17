@@ -1,6 +1,7 @@
 // JSX stands for JavaScript XML, a syntax extension for JavaScript primarily used with React to describe what the user interface should look lik
 
 import { useState, useEffect } from 'react';
+import { translations } from "../translations";
 import { getCategory, searchNews, getRecent } from '../api';
 import NewsCard from '../components/NewsCard';
 // import CategorySidebar from '../components/CategorySidebar';
@@ -8,11 +9,14 @@ import SkeletonCard from '../components/SkeletonCard';
 export default function Home({
   onArticleClick,
   searchQuery,
-  selectedCategory
+  search,
+  selectedCategory,
+  language
 }) {
   const [articles,   setArticles]   = useState([]);
   // const [categories, setCategories] = useState([]);
   // const [stats,      setStats]      = useState(null);
+  const t = translations[language];
   const [stats] = useState(null);
   const [loading,    setLoading]    = useState(true);
 
@@ -105,7 +109,9 @@ useEffect(() => {
     ? `Results for "${searchQuery}"`
     : selectedCategory
       ? selectedCategory
-      : "Today's Current Affairs"}
+       : language === "hi"
+  ? "आज की समसामयिक घटनाएँ"
+  : t.todayCA}
 </h1>
             <span className="text-sm text-gray-400">{articles.length} articles</span>
           </div>

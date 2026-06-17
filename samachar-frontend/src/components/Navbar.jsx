@@ -56,7 +56,7 @@ import {
 } from '@clerk/clerk-react';
 
 import { useState } from 'react';
-
+import { translations } from "../translations";
 export default function Navbar({
   onSearch,
   onQuiz,
@@ -66,7 +66,22 @@ export default function Navbar({
   categories = [],
   selectedCategory,
   onCategorySelect,
-}) {
+
+  language,
+  setLanguage,
+}) 
+{
+  const categoryHindi = {
+  "Politics & Governance": "राजनीति एवं शासन",
+  "Economy & Banking": "अर्थव्यवस्था एवं बैंकिंग",
+  "International Relations": "अंतरराष्ट्रीय संबंध",
+  "Science & Technology": "विज्ञान एवं प्रौद्योगिकी",
+  "Defense & Security": "रक्षा एवं सुरक्षा",
+  "Government Schemes & Policies": "सरकारी योजनाएँ एवं नीतियाँ",
+  "Environment and Ecology":"पर्यावरण एवं पारिस्थितिकी",
+  "Judiciary and Legal" : "न्यायपालिका एवं विधि",
+  "Reports and Indexes" : "रिपोर्ट्स एवं सूचकांक"
+};
 const categoryIcons = {
   "Politics & Governance": "🏛️",
   "Defense & Security": "🛡️",
@@ -78,6 +93,7 @@ const categoryIcons = {
   "Judiciary & Legal": "⚖️",
   "Appointments & Resignations": "👤",
 }; 
+  const t = translations[language];
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -111,7 +127,7 @@ const categoryIcons = {
           <SignedOut>
             <SignInButton mode="modal">
               <button className="bg-white text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100">
-                Login
+                {t.login}
               </button>
             </SignInButton>
           </SignedOut>
@@ -126,7 +142,7 @@ const categoryIcons = {
             </button>
           </SignedIn>
         </div>
-
+          
         {/* SEARCH BAR */}
         <div className="mt-4">
           <input
@@ -136,7 +152,29 @@ const categoryIcons = {
           />
         </div>
       </nav>
+      <div className="flex items-center gap-2">
+  <button
+    onClick={() => setLanguage("en")}
+    className={`px-3 py-1 rounded-lg text-sm ${
+      language === "en"
+        ? "bg-orange-500 text-white"
+        : "bg-gray-700 text-gray-300"
+    }`}
+  >
+    EN
+  </button>
 
+  <button
+    onClick={() => setLanguage("hi")}
+    className={`px-3 py-1 rounded-lg text-sm ${
+      language === "hi"
+        ? "bg-orange-500 text-white"
+        : "bg-gray-700 text-gray-300"
+    }`}
+  >
+    हिन्दी
+  </button>
+</div>
       {/* OVERLAY */}
       {menuOpen && (
         <>
@@ -181,14 +219,14 @@ const categoryIcons = {
                 }}
                 className="w-full text-left p-3 rounded-lg hover:bg-orange-50 font-medium"
               >
-                📰 All News
+                📄 {t.allNews}
               </button>
 
               {/* CATEGORIES */}
               <div className="border-t my-3"></div>
 
               <h3 className="font-semibold text-gray-700 px-3">
-                Categories
+                {t.categories}
               </h3>
           
 
@@ -205,7 +243,10 @@ const categoryIcons = {
                       : 'hover:bg-gray-100'
                   }`}
                 >
-                  {categoryIcons[cat.name] || "📌"} {cat.name}
+                  {categoryIcons[cat.name] || "📌"}{" "}
+{language === "hi"
+  ? categoryHindi[cat.name] || cat.name
+  : cat.name}
                 </button>
               ))}
 
@@ -219,7 +260,7 @@ const categoryIcons = {
                 }}
                 className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
               >
-                🧠 Daily Quiz
+                {t.dailyQuiz}
               </button>
 
               {/* WEEKLY DIGEST */}
@@ -230,7 +271,7 @@ const categoryIcons = {
                 }}
                 className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
               >
-                📋 Weekly Digest
+                {t.weeklyDigest}
               </button>
 
               {/* PROFILE */}
@@ -241,7 +282,7 @@ const categoryIcons = {
                 }}
                 className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
               >
-                👤 My Profile
+                {t.profile}
               </button>
 
               <div className="border-t my-3"></div>
@@ -252,7 +293,7 @@ const categoryIcons = {
 
 <div className="px-3 py-2">
   <p className="text-xs uppercase text-gray-400 mb-2">
-    Account
+    {t.account}
   </p>
 
   <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
