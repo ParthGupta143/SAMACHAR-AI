@@ -1,53 +1,4 @@
 
-
-//Mobile resposnive
-
-// import { SignInButton, SignedIn, SignedOut } from '@clerk/clerk-react';
-// import { useState } from 'react';
-
-// // export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile }) {
-// export default function Navbar({ onSearch, onQuiz, onDigest, onHome, onProfile}) {
-//   // const [menuOpen, setMenuOpen] = useState(false);
-
-//   return (
-//     <nav className="bg-gray-900 text-white px-4 py-3 sticky top-0 z-50">
-      
-//       {/* 🔥 TOP ROW */}
-//       <div className="flex items-center justify-between">
-        
-//         {/* Logo */}
-//         <div onClick={onHome} className="cursor-pointer">
-//           <span className="text-xl md:text-2xl font-bold text-orange-400">SAMACHAR</span>
-//           <span className="text-xl md:text-2xl font-bold text-white">.AI</span>
-//           <p className="text-[10px] md:text-xs text-gray-400">
-//             AI-Powered Current Affairs
-//           </p>
-//         </div>
-
-//         {/* 🔥 Hamburger (mobile only) */}
-//         <SignedOut>
-//   <SignInButton mode="modal">
-//     <button className="bg-white text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100">
-//       Login
-//     </button>
-//   </SignInButton>
-// </SignedOut>
-
-// <SignedIn>
-//   <button
-//     className="text-3xl text-white"
-//     onClick={() => setMenuOpen(true)}
-//   >
-//     ☰
-//   </button>
-// </SignedIn>
-//       </div>
-
-      
-//     </nav>
-//   );
-// }
-
 import {
   SignInButton,
   SignedIn,
@@ -56,7 +7,6 @@ import {
 } from '@clerk/clerk-react';
 
 import { useState } from 'react';
-import { translations } from "../translations";
 export default function Navbar({
   onSearch,
   onQuiz,
@@ -66,22 +16,8 @@ export default function Navbar({
   categories = [],
   selectedCategory,
   onCategorySelect,
-
-  language,
-  setLanguage,
 }) 
 {
-  const categoryHindi = {
-  "Politics & Governance": "राजनीति एवं शासन",
-  "Economy & Banking": "अर्थव्यवस्था एवं बैंकिंग",
-  "International Relations": "अंतरराष्ट्रीय संबंध",
-  "Science & Technology": "विज्ञान एवं प्रौद्योगिकी",
-  "Defense & Security": "रक्षा एवं सुरक्षा",
-  "Government Schemes & Policies": "सरकारी योजनाएँ एवं नीतियाँ",
-  "Environment and Ecology":"पर्यावरण एवं पारिस्थितिकी",
-  "Judiciary and Legal" : "न्यायपालिका एवं विधि",
-  "Reports and Indexes" : "रिपोर्ट्स एवं सूचकांक"
-};
 const categoryIcons = {
   "Politics & Governance": "🏛️",
   "Defense & Security": "🛡️",
@@ -93,7 +29,6 @@ const categoryIcons = {
   "Judiciary & Legal": "⚖️",
   "Appointments & Resignations": "👤",
 }; 
-  const t = translations[language];
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -152,29 +87,7 @@ const categoryIcons = {
           />
         </div>
       </nav>
-      <div className="flex items-center gap-2">
-  <button
-    onClick={() => setLanguage("en")}
-    className={`px-3 py-1 rounded-lg text-sm ${
-      language === "en"
-        ? "bg-orange-500 text-white"
-        : "bg-gray-700 text-gray-300"
-    }`}
-  >
-    EN
-  </button>
-
-  <button
-    onClick={() => setLanguage("hi")}
-    className={`px-3 py-1 rounded-lg text-sm ${
-      language === "hi"
-        ? "bg-orange-500 text-white"
-        : "bg-gray-700 text-gray-300"
-    }`}
-  >
-    हिन्दी
-  </button>
-</div>
+      
       {/* OVERLAY */}
       {menuOpen && (
         <>
@@ -183,8 +96,7 @@ const categoryIcons = {
             onClick={() => setMenuOpen(false)}
           />
 
-          {/* DRAWER */}
-          {/* <div className="fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-xl overflow-y-auto"> */}
+          
           <div
   className={`fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-2xl overflow-y-auto
   transform transition-transform duration-300 ease-in-out
@@ -244,9 +156,7 @@ const categoryIcons = {
                   }`}
                 >
                   {categoryIcons[cat.name] || "📌"}{" "}
-{language === "hi"
-  ? categoryHindi[cat.name] || cat.name
-  : cat.name}
+
                 </button>
               ))}
 

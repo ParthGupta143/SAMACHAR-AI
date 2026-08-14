@@ -11,32 +11,13 @@ export default function Home({
   searchQuery,
   search,
   selectedCategory,
-  language
 }) {
   const [articles,   setArticles]   = useState([]);
   // const [categories, setCategories] = useState([]);
   // const [stats,      setStats]      = useState(null);
-  const t = translations[language];
   const [stats] = useState(null);
   const [loading,    setLoading]    = useState(true);
 
-//   useEffect(() => {
-//   getStats().then(r => setStats(r.data));
-// }, []);
-
-//   useEffect(() => {
-//     setLoading(true);
-//     const fetch = searchQuery
-//   ? searchNews(searchQuery)
-//   : selectedCategory
-//     ? getCategory(selectedCategory)
-//     : getRecent();
-
-//     fetch.then(r => {
-//       setArticles(r.data.articles || []);
-//       setLoading(false);
-//     }).catch(() => setLoading(false));
-//   }, [selectedCategory, searchQuery]);
 useEffect(() => {
   console.log("Selected Category:", selectedCategory);
 
@@ -57,16 +38,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* {stats && (
-        <div className="bg-orange-50 border-b border-orange-100 px-6 py-2">
-          <p className="text-xs text-orange-700">
-            📊 <strong>{stats.total_articles}</strong> articles processed &nbsp;|&nbsp;
-            Today: <strong>{stats.today_articles}</strong> &nbsp;|&nbsp;
-            Top: <em>{stats.top_article_today}</em>
-          </p>
-        </div>
-      )} */}
-
+      
       {stats && (
   <div className="bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100 px-6 py-3">
     <div className="max-w-7xl mx-auto flex items-center gap-6 text-xs">
@@ -87,20 +59,12 @@ useEffect(() => {
 )}
       
 
-      {/* <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6"> */}
+      
       <div className="max-w-7xl mx-auto px-4 py-4">
 
-  {/* Sidebar */}
-  {/* <div className="w-64 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto"> */}
-  {/* <div className="w-full lg:w-64 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] overflow-y-auto">
-    <CategorySidebar
-      categories={categories}
-      selected={selected}
-      onSelect={setSelected}
-    />
-  </div> */}
+  
 
-  {/* Articles */}
+
   <div>
     
           <div className="flex items-center justify-between mb-4">
@@ -109,8 +73,8 @@ useEffect(() => {
     ? `Results for "${searchQuery}"`
     : selectedCategory
       ? selectedCategory
-       : language === "hi"
-  ? "आज की समसामयिक घटनाएँ"
+  //      : language === "hi"
+  // ? "आज की समसामयिक घटनाएँ"
   : t.todayCA}
 </h1>
             <span className="text-sm text-gray-400">{articles.length} articles</span>
@@ -121,7 +85,7 @@ useEffect(() => {
     {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
   </div>
 ) : articles.length === 0 ? (
-  // <div className="text-center py-20 text-gray-400">No articles found.</div>
+  
   <div className="text-center py-20">
   <div className="text-5xl mb-4">📭</div>
   <p className="text-gray-500 font-medium">No articles found</p>

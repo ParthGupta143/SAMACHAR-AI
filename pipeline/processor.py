@@ -44,8 +44,12 @@ STRICT RULES:
 - summary must be 40-50 words minimum, factual, no opinions
 - important_facts must contain specific data: numbers, names, ranks, dates, firsts, superlatives
 
-Article Title: {title}
-Article Content: {content}"""
+News Title:
+{title}
+
+News Content:
+{content}
+"""
 
 
 def process_article(article):  #👉 Takes ONE article → returns processed version
@@ -59,6 +63,7 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
         response = client.chat.completions.create(
             # model="llama-3.3-70b-versatile",  # same model you used in Omni.AI
             model="llama-3.1-8b-instant",
+            # model="openai/gpt-oss-20b",    #model change
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1024,
             temperature=0.1  # low temp = more consistent JSON output, less randomness
@@ -66,6 +71,12 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
 
         raw_response = response.choices[0].message.content.strip()  #Get response or extracts AI output
         processed = json.loads(raw_response)  #convert json i.e. 👉 String → Python dict
+        # print(processed.keys())
+
+        # processed.setdefault("title_hi", "")
+        # processed.setdefault("summary_hi", "")
+        # processed.setdefault("key_points_hi", [])
+        # processed.setdefault("important_facts_hi", [])
 
     #Add metadata:Give AI output + original data
         processed["source"] = article["source"]
@@ -91,14 +102,14 @@ def process_all(articles):
     """
     print(f"Testing Groq connection...")
     # Limit to 40 per run to stay within Groq free tier
-    articles = articles[:25] #reduce from 40 to 25
+    articles = articles[:20] #reduce from 40 to 25
     print(f"\n🤖 Processing {len(articles)} articles (capped at 50)...\n")
     try:
         test = client.chat.completions.create(
             # model="llama-3.3-70b-versatile",
             model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": "say ok"}],
-            max_tokens=10
+            max_tokens=300
         )
         print(f"Groq test: {test.choices[0].message.content}")
     except Exception as e:
@@ -113,7 +124,7 @@ def process_all(articles):
         print(f"[{i+1}/{len(articles)}] Processing: {article['title'][:60]}...")
 
         result = process_article(article)   #process each result
-        time.sleep(1)
+        time.sleep(12)
         if result is None:   #if fail
             skipped += 1
             continue

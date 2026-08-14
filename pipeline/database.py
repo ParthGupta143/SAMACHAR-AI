@@ -29,11 +29,12 @@ class Article(Base):
     summary             = Column(Text)                 #core fields--->
     key_points          = Column(JSON)  #<---
     important_facts     = Column(JSON)  #json field--->👉 You’re storing lists directly → very good design
-    #for hindi translation: Bilingual
+    # for hindi translation: Bilingual
     # title_hi       = Column(Text, nullable=True)
     # summary_hi     = Column(Text, nullable=True)
     # key_points_hi  = Column(JSON, nullable=True)
     # important_facts_hi = Column(JSON, nullable=True)
+    
     exam_relevance_score = Column(Integer)  #scoring
     is_exam_relevant    = Column(Boolean, default=True)
     verification_status = Column(String(50))
@@ -140,7 +141,11 @@ def save_articles(processed_articles):
     source_name         = article.get("source", ""),
     source_url          = article.get("source_url", ""),
     published_at        = article.get("published", ""),
-    created_at          = datetime.utcnow()   # 🔥 ADD THIS LINE
+    created_at          = datetime.utcnow(),  # 🔥 ADD THIS LINE
+    # title_hi = article.get("title_hi", ""),
+    # summary_hi = article.get("summary_hi", ""),
+    # key_points_hi = article.get("key_points_hi", []),
+    # important_facts_hi = article.get("important_facts_hi", [])
 )
         session.add(db_article)
         existing_titles.append(title)  # add to list so next article also checked against it

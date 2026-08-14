@@ -9,13 +9,13 @@ import { CATEGORY_COLORS } from '../components/CategorySidebar';
 //   useEffect(() => {
 //     getArticle(articleId).then(r => setArticle(r.data));
 //   }, [articleId]);
-export default function ArticleDetail({ articleId, onBack, language }) {
+export default function ArticleDetail({ articleId, onBack }) {
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
     const fetchFn = language === 'hi' ? getArticleHindi : getArticle;
     fetchFn(articleId).then(r => setArticle(r.data));
-  }, [articleId, language]);
+  }, [articleId]);
   if (!article) return (
     <div className="text-center py-20 text-gray-400">Loading...</div>
   );
@@ -35,7 +35,9 @@ export default function ArticleDetail({ articleId, onBack, language }) {
         {article.category}
       </span>
 
-      <h1 className="text-2xl font-bold text-gray-900 mt-3 mb-4">{article.title}</h1>
+      {/* <h1 className="text-2xl font-bold text-gray-900 mt-3 mb-4">{language === "hi" && article.title_hi
+  ? article.title_hi
+  : article.title}</h1> */}
 
       <div className="flex gap-4 text-xs text-gray-500 mb-6">
         <span>📰 {article.source_name}</span>
@@ -43,9 +45,11 @@ export default function ArticleDetail({ articleId, onBack, language }) {
         <span className="text-green-600">✅ {article.verification_status}</span>
       </div>
 
-      <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg mb-6">
-        <p className="text-sm text-gray-800 leading-relaxed">{article.summary}</p>
-      </div>
+      {/* <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg mb-6">
+        <p className="text-sm text-gray-800 leading-relaxed">{language === "hi" && article.summary_hi
+  ? article.summary_hi
+  : article.summary}</p>
+      </div> */}
 
       <div className="mb-6">
         <h2 className="font-bold text-gray-800 mb-2">Key Points</h2>

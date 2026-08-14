@@ -11,9 +11,6 @@ import WeeklyDigest from './pages/WeeklyDigest';
 import ProfilePage from './pages/ProfilePage';
 
 export default function App() {
-  const [language, setLanguage] = useState(
-  localStorage.getItem("lang") || "en"
-);
   const [currentArticle, setCurrentArticle] = useState(null);
   const [searchQuery,    setSearchQuery]    = useState('');
   const [showQuiz,       setShowQuiz]       = useState(false);
@@ -21,9 +18,6 @@ export default function App() {
   const [showProfile,    setShowProfile]    = useState(false); // ← new
   const [categories, setCategories] = useState([]);
 const [selectedCategory, setSelectedCategory] = useState(null);
-useEffect(() => {
-  localStorage.setItem("lang", language);
-}, [language]);
 useEffect(() => {
   getCategories()
     .then(r => setCategories(r.data.categories || []))
@@ -67,8 +61,6 @@ useEffect(() => {
   categories={categories}
   selectedCategory={selectedCategory}
   onCategorySelect={setSelectedCategory}
-  language={language}
-  setLanguage={setLanguage}
 />
 
       {showProfile
@@ -84,7 +76,6 @@ useEffect(() => {
   onArticleClick={setCurrentArticle}
   searchQuery={searchQuery}
   selectedCategory={selectedCategory}
-  language={language}
 />
       }
     </div>
