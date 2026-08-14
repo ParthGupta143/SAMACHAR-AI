@@ -1,4 +1,3 @@
-
 import {
   SignInButton,
   SignedIn,
@@ -7,6 +6,7 @@ import {
 } from '@clerk/clerk-react';
 
 import { useState } from 'react';
+
 export default function Navbar({
   onSearch,
   onQuiz,
@@ -16,23 +16,24 @@ export default function Navbar({
   categories = [],
   selectedCategory,
   onCategorySelect,
-}) 
-{
-const categoryIcons = {
-  "Politics & Governance": "🏛️",
-  "Defense & Security": "🛡️",
-  "Economy & Banking": "💰",
-  "Science & Technology": "🚀",
-  "Environment & Ecology": "🌿",
-  "International Relations": "🌍",
-  "Government Schemes & Policies": "📜",
-  "Judiciary & Legal": "⚖️",
-  "Appointments & Resignations": "👤",
-}; 
+}) {
+  const categoryIcons = {
+    "Politics & Governance": "🏛️",
+    "Defense & Security": "🛡️",
+    "Economy & Banking": "💰",
+    "Science & Technology": "🚀",
+    "Environment & Ecology": "🌿",
+    "International Relations": "🌍",
+    "Government Schemes & Policies": "📜",
+    "Judiciary & Legal": "⚖️",
+    "Appointments & Resignations": "👤",
+  };
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
+      {/* NAVBAR */}
       <nav className="bg-gray-900 text-white px-4 py-3 sticky top-0 z-50">
 
         {/* TOP BAR */}
@@ -49,6 +50,7 @@ const categoryIcons = {
             <span className="text-xl md:text-2xl font-bold text-orange-400">
               SAMACHAR
             </span>
+
             <span className="text-xl md:text-2xl font-bold text-white">
               .AI
             </span>
@@ -62,7 +64,7 @@ const categoryIcons = {
           <SignedOut>
             <SignInButton mode="modal">
               <button className="bg-white text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100">
-                {t.login}
+                Login
               </button>
             </SignInButton>
           </SignedOut>
@@ -71,54 +73,62 @@ const categoryIcons = {
           <SignedIn>
             <button
               onClick={() => setMenuOpen(true)}
-              className="text-3xl text-white"
+              className="text-3xl text-white hover:text-orange-400 transition"
+              aria-label="Open menu"
             >
               ☰
             </button>
           </SignedIn>
         </div>
-          
+
         {/* SEARCH BAR */}
         <div className="mt-4">
           <input
+            type="text"
             onChange={(e) => onSearch(e.target.value)}
             placeholder="Search news..."
             className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
       </nav>
-      
-      {/* OVERLAY */}
+
+      {/* SIDE MENU */}
       {menuOpen && (
         <>
+          {/* OVERLAY */}
           <div
             className="fixed inset-0 bg-black/40 z-40"
             onClick={() => setMenuOpen(false)}
           />
 
-          
+          {/* DRAWER */}
           <div
-  className={`fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-2xl overflow-y-auto
-  transform transition-transform duration-300 ease-in-out
-  ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
->
+            className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white z-50 shadow-2xl overflow-y-auto
+            transform transition-transform duration-300 ease-in-out
+            ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+          >
 
             {/* HEADER */}
             <div className="flex items-center justify-between p-5 border-b bg-gradient-to-r from-orange-500 to-orange-400 text-white">
-  <div>
-    <h2 className="font-bold text-lg">SAMACHAR.AI</h2>
-    <p className="text-xs opacity-80">
-      Current Affairs Dashboard
-    </p>
-  </div>
 
-  <button
-    onClick={() => setMenuOpen(false)}
-    className="text-2xl"
-  >
-    ✕
-  </button>
-</div>
+              <div>
+                <h2 className="font-bold text-lg">
+                  SAMACHAR.AI
+                </h2>
+
+                <p className="text-xs opacity-80">
+                  Current Affairs Dashboard
+                </p>
+              </div>
+
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="text-2xl hover:opacity-80 transition"
+                aria-label="Close menu"
+              >
+                ✕
+              </button>
+            </div>
 
             <div className="p-4 space-y-2">
 
@@ -129,18 +139,17 @@ const categoryIcons = {
                   onHome();
                   setMenuOpen(false);
                 }}
-                className="w-full text-left p-3 rounded-lg hover:bg-orange-50 font-medium"
+                className="w-full text-left p-3 rounded-lg hover:bg-orange-50 font-medium transition"
               >
-                📄 {t.allNews}
+                📄 All News
               </button>
 
               {/* CATEGORIES */}
-              <div className="border-t my-3"></div>
+              <div className="border-t my-3" />
 
               <h3 className="font-semibold text-gray-700 px-3">
-                {t.categories}
+                Categories
               </h3>
-          
 
               {categories.map((cat) => (
                 <button
@@ -151,16 +160,20 @@ const categoryIcons = {
                   }}
                   className={`w-full text-left p-3 rounded-xl transition-all duration-200 ${
                     selectedCategory === cat.name
-                      ? 'bg-orange-500 text-white shadow-md'
-                      : 'hover:bg-gray-100'
+                      ? "bg-orange-500 text-white shadow-md"
+                      : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  {categoryIcons[cat.name] || "📌"}{" "}
+                  <span className="mr-2">
+                    {categoryIcons[cat.name] || "📌"}
+                  </span>
 
+                  {cat.name}
                 </button>
               ))}
 
-              <div className="border-t my-3"></div>
+              {/* DIVIDER */}
+              <div className="border-t my-3" />
 
               {/* DAILY QUIZ */}
               <button
@@ -168,9 +181,9 @@ const categoryIcons = {
                   onQuiz();
                   setMenuOpen(false);
                 }}
-                className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
+                className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition"
               >
-                {t.dailyQuiz}
+                🧠 Daily Quiz
               </button>
 
               {/* WEEKLY DIGEST */}
@@ -179,9 +192,9 @@ const categoryIcons = {
                   onDigest();
                   setMenuOpen(false);
                 }}
-                className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
+                className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition"
               >
-                {t.weeklyDigest}
+                📰 Weekly Digest
               </button>
 
               {/* PROFILE */}
@@ -190,38 +203,39 @@ const categoryIcons = {
                   onProfile();
                   setMenuOpen(false);
                 }}
-                className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
+                className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition"
               >
-                {t.profile}
+                👤 My Profile
               </button>
 
-              <div className="border-t my-3"></div>
-
-              {/* CLERK USER */}
               {/* ACCOUNT */}
-<div className="border-t my-3"></div>
+              <div className="border-t my-3" />
 
-<div className="px-3 py-2">
-  <p className="text-xs uppercase text-gray-400 mb-2">
-    {t.account}
-  </p>
+              <div className="px-3 py-2">
 
-  <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
-    <span className="text-sm font-medium text-gray-700">
-      Signed In
-    </span>
+                <p className="text-xs uppercase text-gray-400 mb-2">
+                  Account
+                </p>
 
-    <UserButton
-      afterSignOutUrl="/"
-      appearance={{
-        elements: {
-          avatarBox:
-            "w-10 h-10 ring-2 ring-orange-200 hover:ring-orange-400 transition"
-        }
-      }}
-    />
-  </div>
-</div>
+                <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
+
+                  <span className="text-sm font-medium text-gray-700">
+                    Signed In
+                  </span>
+
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox:
+                          "w-10 h-10 ring-2 ring-orange-200 hover:ring-orange-400 transition",
+                      },
+                    }}
+                  />
+
+                </div>
+              </div>
+
             </div>
           </div>
         </>
