@@ -48,8 +48,8 @@ def generate_quiz_for_article(article):
     try:
         response = client.chat.completions.create(
             
-            model="llama-3.1-8b-instant",
-            # model="openai/gpt-oss-20b",  #model change
+            # model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",  #model change
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1024,
             temperature=0.3

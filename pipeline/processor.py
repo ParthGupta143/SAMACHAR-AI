@@ -62,8 +62,8 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
     try: #Call AI
         response = client.chat.completions.create(
             # model="llama-3.3-70b-versatile",  # same model you used in Omni.AI
-            model="llama-3.1-8b-instant",
-            # model="openai/gpt-oss-20b",    #model change
+            # model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",    #model change
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1024,
             temperature=0.1  # low temp = more consistent JSON output, less randomness
@@ -102,12 +102,12 @@ def process_all(articles):
     """
     print(f"Testing Groq connection...")
     # Limit to 40 per run to stay within Groq free tier
-    articles = articles[:20] #reduce from 40 to 25
+    articles = articles[:20] 
     print(f"\n🤖 Processing {len(articles)} articles (capped at 50)...\n")
     try:
         test = client.chat.completions.create(
             # model="llama-3.3-70b-versatile",
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",    #model change
             messages=[{"role": "user", "content": "say ok"}],
             max_tokens=300
         )
@@ -124,7 +124,7 @@ def process_all(articles):
         print(f"[{i+1}/{len(articles)}] Processing: {article['title'][:60]}...")
 
         result = process_article(article)   #process each result
-        time.sleep(12)
+        time.sleep(2)
         if result is None:   #if fail
             skipped += 1
             continue
