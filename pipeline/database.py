@@ -142,10 +142,7 @@ def save_articles(processed_articles):
     source_url          = article.get("source_url", ""),
     published_at        = article.get("published", ""),
     created_at          = datetime.utcnow(),  # 🔥 ADD THIS LINE
-    # title_hi = article.get("title_hi", ""),
-    # summary_hi = article.get("summary_hi", ""),
-    # key_points_hi = article.get("key_points_hi", []),
-    # important_facts_hi = article.get("important_facts_hi", [])
+    
 )
         session.add(db_article)
         existing_titles.append(title)  # add to list so next article also checked against it

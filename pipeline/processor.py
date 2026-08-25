@@ -71,12 +71,7 @@ def process_article(article):  #👉 Takes ONE article → returns processed ver
 
         raw_response = response.choices[0].message.content.strip()  #Get response or extracts AI output
         processed = json.loads(raw_response)  #convert json i.e. 👉 String → Python dict
-        # print(processed.keys())
-
-        # processed.setdefault("title_hi", "")
-        # processed.setdefault("summary_hi", "")
-        # processed.setdefault("key_points_hi", [])
-        # processed.setdefault("important_facts_hi", [])
+        
 
     #Add metadata:Give AI output + original data
         processed["source"] = article["source"]
